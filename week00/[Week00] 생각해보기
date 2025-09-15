@@ -1,0 +1,45 @@
+- **User**
+    | **user_id** | PK, AUTO_INCREMENT | BIGINT |
+    | --- | --- | --- |
+    | **user_name** | 사용자 이름 | VARCHAR(30) |
+    | **user_nickname** | 사용자 닉네임 | VARCHAR(30) |
+    | **user_phone_number** | 사용자 전화번호 | VARCHAR(30) |
+    | **user_gender** | 사용자 성별 | VARCHAR(10) |
+    | created_at | 생성 시간(millisecond) | datetime(6) |
+    | updated_at | 업데이트 시간(millisecond) | datetime(6) |
+    | status | 회원 활성화 상태 | VARCHAR(10) |
+    | inactive_date | 비활성화 누적 기간 | datetime |
+
+- **Book**
+    | **book_id** | PK, AUTO_INCREMENT | BIGINT |
+    | --- | --- | --- |
+    | **book_title** | 책 제목 | VARCHAR(50) |
+    | **book_description** | 책 설명 | TEXT |
+    | book_category | 책 카테고리 | VARCHAR(30) |
+    | book_remain | 남은 책 개수 | BIGINT |
+
+- **Rent**
+    | **rent_id** | PK, AUTO_INCREMENT | BIGINT |
+    | --- | --- | --- |
+    | **user_id** | FOREIGN KEY | BIGINT |
+    | **book_id** | FOREIGN KEY | BIGINT |
+    |  |  |  |
+    |  |  |  |
+
+- **Hashtag** -
+    | hashtag_id | PK, AUTO_INCREMENT | BIGINT |
+    | --- | --- | --- |
+    | hashtag_name | 해시태그 이름 | VARCHAR(50) |
+    |  |  |  |
+
+- **Review**
+    | review_id | PK, AUTO_INCREMENT | BIGINT |
+    | --- | --- | --- |
+    | review_checked | 사용자가 좋아요 눌렀는지 여부 | Boolean |
+    | user_id | FOREIGN KEY | BIGINT |
+    | book_id | FOREIGN KEY | BIGINT |
+
+- Book_Hashtag
+book_hashtag_id	PK, AUTO_INCREMENT	BIGINT
+book_id	FOREIGN KEY	BIGINT
+hashtag_id	FOREIGN KEY	BIGINT
