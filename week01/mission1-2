@@ -1,0 +1,4 @@
+# 생성한 테이블에 데이터 삽입 (리뷰 등록)
+
+insert into Review (store_id,	user_id, score, body)
+VALUES (1, 10001, 5, "음 너무 맛있어요...");

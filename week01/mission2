@@ -1,0 +1,4 @@
+# 사용자 이름, 이메일, 휴대폰 번호, 포인트 SELECT
+SELECT u.name, u.email, u.phone_number, u.point
+FROM User u
+WHERE u.name = 'nickname012';

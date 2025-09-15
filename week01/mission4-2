@@ -1,0 +1,15 @@
+# 완료 미션 개수, 현재 지역에서 도전 가능한 미션 목록
+# (가게이름, 기준금액, 수식어, 미션타입, 포인트, 시작날짜)
+
+SELECT COUNT(*), s.name, m.price_criteria, m.modifier, m.type, m.point, sm.start_at
+FROM `User` u
+JOIN Store s ON s.address = u.address # 같은 주소 기준으로 JOIN. 대신 address 형식이 같아야함
+JOIN StoreMission sm ON sm.store_id = s.id
+JOIN Mission m ON sm.mission_id = m.id
+LEFT JOIN UserStoreMission usm
+	ON usm.user_id = u_id AND usm.store_mission_id=sm.id
+WHERE
+	AND usm.id IS NULL OR usm.status != "COMPLETED" # usm id가 없거나(미배정) 미션 상태가 COMPLETED가 아닌경우
+	AND CONCAT(DATE_FORMAT(usm.assigned_at, "%Y%m%d%H%i%s"), LPAD(usm.id, 10 '0')) < "20250913224630000000052"
+ORDER BY usm.assigned_at desc, usm.id desc
+limit 10;

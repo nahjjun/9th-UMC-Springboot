@@ -1,0 +1,21 @@
+# Review 테이블 생성
+create table Review(
+	id BIGINT AUTO_INCREMENT PRIMARY KEY,
+	store_id BIGINT NOT NULL,
+	user_id BIGINT NOT NULL,
+	score INT NOT NULL DEFAULT 0,
+	body TEXT,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	# CURRENT_TIMESTAMP: 현재 날짜, 시간을 반환하는 내장 함수 (NOW()와 같은 값)
+	# ON UPDATE: "DATETIME DEFAULT CURRENT_TIMESTAMP"와 같이 쓰이는 옵션.
+		# ㄴ> 해당 행이 업데이트 될 때마다 자동으로 지정 컬럼 값을 갱신해주는 기능
+
+	# FK 설정. 제약조건명을 설정하고, 현재 테이블의 fk와 연결할 참조 테이블의
+	# 참조 컬럼을 설정한다.
+	CONSTRAINT fk_review_store FOREIGN KEY (store_id) REFERENCES Store(id),
+	CONSTRAINT fk_review_user FOREIGN KEY (user_id) REFERENCES User(id),
+
+	# 리뷰를 하루에 하나씩만 남길 수 있게 설정
+	CONSTRAINT unique_review_store_user_date UNIQUE (store_id, user_id, DATE(created_at))
+);

@@ -1,0 +1,31 @@
+# 처음 한 쿼리문
+# 가게이름, 기준금액, 수식어, 미션타입, 성공포인트, 미션 상태
+
+	# 진행 중인 미션
+SELECT s.name, m.price_criteria, m.modifier, m.type, m.point, usm.status
+FROM UserStoreMission usm
+JOIN `User` u ON usm.user_id = u.id
+JOIN StoreMission sm ON usm.store_mission_id = sm.id
+JOIN Mission m ON sm.mission_id = m.id
+JOIN Store s ON sm.store_id = s.id
+WHERE u.id=1
+	AND usm.status = 'IN_PROGRESS'
+	AND CONCAT(DATE_FOMAT(usm.assigned_at, 14, '0'), LPAD(usm.id, 10 '0')) < "20250913224630000000052"
+ORDER BY usm.assigned_at desc, usm.id desc
+limit 10;
+
+# ㄴ> 시용자의 아이디가 1이며, 미션 진행 상태가 IN_PROGRESS이며, 날짜+usm.id인 구분코드로 커서 지정
+
+	# 진행 완료한 미션
+SELECT s.name, m.price_criteria, m.modifier, m.type, m.point, usm.status
+FROM UserStoreMission usm
+JOIN `User` u ON usm.user_id = u.id
+JOIN StoreMission sm ON usm.store_mission_id = sm.id
+JOIN Mission m ON sm.mission_id = m.id
+JOIN Store s ON sm.store_id = s.id
+WHERE u.id=1
+	AND usm.status = 'COMPLETED'
+	AND CONCAT(DATE_FORMAT(usm.assigned_at, "%Y%m%d%H%i%s"), LPAD(usm.id, 10 '0')) < "20250913224630000000052"
+ORDER BY usm.assigned_at desc, usm.id desc
+limit 10;
+
