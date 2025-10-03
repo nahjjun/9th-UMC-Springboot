@@ -3,11 +3,16 @@ package com.example.umc_springboot.Domain.User.Entity;
 
 import com.example.umc_springboot.Domain.User.Enums.Gender;
 import com.example.umc_springboot.Domain.User.Enums.UserStatus;
+import com.example.umc_springboot.Domain.UserFoodType.Entity.UserFoodType;
+import com.example.umc_springboot.Domain.UserProvision.Entity.UserProvision;
+import com.example.umc_springboot.Domain.UserStoreMission.Entity.UserStoreMission;
 import com.example.umc_springboot.Global.Entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Builder
@@ -32,6 +37,7 @@ public class User extends BaseTimeEntity {
 
     @Column(name = "gender",  nullable = false)
     @Builder.Default
+    @Enumerated(EnumType.STRING)
     private Gender gender = Gender.NONE;
 
     @Column(name = "birth",  nullable = false)
@@ -52,9 +58,18 @@ public class User extends BaseTimeEntity {
 
     @Column(name="status", nullable = false)
     @Builder.Default
+    @Enumerated(EnumType.STRING)
     private UserStatus status = UserStatus.ACTIVE;
 
     @Column(name="inactive_date")
     private LocalDate inactiveDate;
 
+    @OneToMany(mappedBy = "user")
+    private Set<UserStoreMission> userStoreMissionSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<UserFoodType> userFoodTypeSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<UserProvision> userProvisionSet = new HashSet<>();
 }

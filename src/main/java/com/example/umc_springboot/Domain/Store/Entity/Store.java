@@ -1,16 +1,23 @@
 package com.example.umc_springboot.Domain.Store.Entity;
 
 import com.example.umc_springboot.Domain.Boss.Entity.Boss;
+import com.example.umc_springboot.Domain.Review.Entity.Review;
+import com.example.umc_springboot.Domain.Store.Enums.StoreStatus;
+import com.example.umc_springboot.Domain.Store.Enums.StoreType;
+import com.example.umc_springboot.Domain.StoreMission.Entity.StoreMission;
 import com.example.umc_springboot.Global.Entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+
 @Builder
 @Getter
 @Entity
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name="Store")
 public class Store extends BaseTimeEntity {
     @Id
@@ -25,14 +32,32 @@ public class Store extends BaseTimeEntity {
         // => EAGER : 엔티티를 조회할 때 연관된 엔티티도 함께 가져온다.
         // 코드가 단순하지만 불필요한 조인/쿼리로 성능 저하 가능함
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="boss_id")
+    @JoinColumn(name="boss_id", nullable = false)
     // Store 테이블에 boos_id라는 컬럼이 생기고, 해당 컬럼이 Boss 테이블의 PK를 참조하는 것
     private Boss boss;
 
     @Column(name="name", nullable = false, length = 10)
     private String name;
 
+    @Column(name="type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StoreType type;
 
+    @Column(name="address", nullable = false, length = 30)
+    private String address;
 
+    @Column(name = "photo_url", length = 30)
+    private String photoUrl;
+
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private StoreStatus status = StoreStatus.ACTIVE;
+
+    @OneToMany(mappedBy = "store") // 해당 클래스에서 어떤 필드명으로 매핑되어있는지 지정
+    private Set<Review> reviewSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "store")
+    private Set<StoreMission> storeMissionSet = new HashSet<>();
 
 }

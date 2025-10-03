@@ -2,9 +2,13 @@ package com.example.umc_springboot.Domain.Mission.Entity;
 
 import com.example.umc_springboot.Domain.Mission.Enums.MissionModifier;
 import com.example.umc_springboot.Domain.Mission.Enums.MissionType;
+import com.example.umc_springboot.Domain.StoreMission.Entity.StoreMission;
 import com.example.umc_springboot.Global.Entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -21,15 +25,20 @@ public class Mission extends BaseTimeEntity {
     @Column(name = "price_criteria", nullable=false)
     private Integer priceCriteria;
 
-    @Column(name = "missionModifier", nullable=false)
-    private MissionModifier missionModifier;
+    @Column(name = "modifier", nullable=false)
+    @Enumerated(EnumType.STRING)
+    private MissionModifier modifier;
 
-    @Column(name = "missionType", nullable = false)
-    private MissionType missionType;
+    @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private MissionType type;
 
     @Column(name = "point", nullable = false)
     @Builder.Default
     private Integer point = 0;
+
+    @OneToMany(mappedBy = "mission")
+    Set<StoreMission> missionSet = new HashSet<>();
 
 }
 
