@@ -23,7 +23,7 @@ public class SecurityConfig {
             "/index.html",
             "/favicon.ico",
             "/assets/**", "/css/**", "/js/**", "/images/**",
-            "/auth/login", "/auth/join", "/swagger-ui/**", "/api-docs", "swagger-ui-custom.html",
+            "/auth/login", "/auth/join", "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
             "/ws/**"
     };
 
