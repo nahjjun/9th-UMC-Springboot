@@ -6,7 +6,9 @@ import com.example.umc_springboot.Global.Entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -35,5 +37,5 @@ public class Provision extends BaseTimeEntity {
     private ProvisionProperty property;
 
     @OneToMany(mappedBy = "provision")
-    private Set<UserProvision> userProvisionSet = new HashSet<>();
+    private List<UserProvision> userProvisionList = new ArrayList<>();
 }

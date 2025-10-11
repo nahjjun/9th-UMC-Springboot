@@ -8,7 +8,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.EmbeddableInstantiator;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -40,5 +42,5 @@ public class Review extends BaseTimeEntity {
 
     // 리뷰:리뷰 사진 => 1:다 관계 매핑
     @OneToMany(mappedBy = "review")
-    private Set<ReviewPhoto>  reviewPhotoSet = new HashSet<>();
+    private List<ReviewPhoto> reviewPhotoList = new ArrayList<>();
 }

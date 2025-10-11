@@ -1,5 +1,6 @@
 package com.example.umc_springboot.Domain.Store.Entity;
 
+import com.example.umc_springboot.Domain.Address.Entity.Address;
 import com.example.umc_springboot.Domain.Boss.Entity.Boss;
 import com.example.umc_springboot.Domain.Review.Entity.Review;
 import com.example.umc_springboot.Domain.Store.Enums.StoreStatus;
@@ -9,7 +10,9 @@ import com.example.umc_springboot.Global.Entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -43,9 +46,6 @@ public class Store extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private StoreType type;
 
-    @Column(name="address", nullable = false, length = 30)
-    private String address;
-
     @Column(name = "photo_url", length = 30)
     private String photoUrl;
 
@@ -55,9 +55,13 @@ public class Store extends BaseTimeEntity {
     private StoreStatus status = StoreStatus.ACTIVE;
 
     @OneToMany(mappedBy = "store") // 해당 클래스에서 어떤 필드명으로 매핑되어있는지 지정
-    private Set<Review> reviewSet = new HashSet<>();
+    private List<Review> reviewList = new ArrayList<>();
 
     @OneToMany(mappedBy = "store")
-    private Set<StoreMission> storeMissionSet = new HashSet<>();
+    private List<StoreMission> storeMissionList = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="address_id", nullable = false)
+    private Address address;
 
 }

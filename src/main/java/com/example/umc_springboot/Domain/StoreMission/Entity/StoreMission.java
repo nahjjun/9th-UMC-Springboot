@@ -3,11 +3,14 @@ package com.example.umc_springboot.Domain.StoreMission.Entity;
 import com.example.umc_springboot.Domain.Mission.Entity.Mission;
 import com.example.umc_springboot.Domain.Store.Entity.Store;
 import com.example.umc_springboot.Domain.StoreMission.Enums.StoreMissionStatus;
+import com.example.umc_springboot.Domain.UserStoreMission.Entity.UserStoreMission;
 import com.example.umc_springboot.Global.Entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Builder
@@ -40,4 +43,6 @@ public class StoreMission extends BaseTimeEntity {
     @Builder.Default
     private StoreMissionStatus status = StoreMissionStatus.ACTIVATE;
 
+    @OneToMany(mappedBy = "storeMission")
+    private List<UserStoreMission> userStoreMissionList = new ArrayList<>();
 }

@@ -1,5 +1,6 @@
 package com.example.umc_springboot.Domain.Boss.Entity;
 
+import com.example.umc_springboot.Domain.Store.Entity.Store;
 import com.example.umc_springboot.Global.Entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,4 +18,7 @@ public class Boss extends BaseTimeEntity {
 
     @Column(name="name", nullable = false)
     private String name;
+
+    @OneToOne(mappedBy = "boss")
+    private Store store;
 }

@@ -7,7 +7,9 @@ import com.example.umc_springboot.Global.Entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -38,7 +40,7 @@ public class Mission extends BaseTimeEntity {
     private Integer point = 0;
 
     @OneToMany(mappedBy = "mission")
-    Set<StoreMission> missionSet = new HashSet<>();
+    List<StoreMission> storeMissionList = new ArrayList<>();
 
 }
 

@@ -1,6 +1,7 @@
 package com.example.umc_springboot.Domain.User.Entity;
 
 
+import com.example.umc_springboot.Domain.Address.Entity.Address;
 import com.example.umc_springboot.Domain.User.Enums.Gender;
 import com.example.umc_springboot.Domain.User.Enums.UserStatus;
 import com.example.umc_springboot.Domain.UserFoodType.Entity.UserFoodType;
@@ -11,7 +12,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -43,9 +46,6 @@ public class User extends BaseTimeEntity {
     @Column(name = "birth",  nullable = false)
     private LocalDate birth;
 
-    @Column(name = "address",  nullable = false, length = 30)
-    private String address;
-
     @Column(name = "phone_number",  nullable = false, length = 15)
     private String phoneNumber;
 
@@ -65,11 +65,16 @@ public class User extends BaseTimeEntity {
     private LocalDate inactiveDate;
 
     @OneToMany(mappedBy = "user")
-    private Set<UserStoreMission> userStoreMissionSet = new HashSet<>();
+    private List<UserStoreMission> userStoreMissionList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private Set<UserFoodType> userFoodTypeSet = new HashSet<>();
+    private List<UserFoodType> userFoodTypeList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private Set<UserProvision> userProvisionSet = new HashSet<>();
+    private List<UserProvision> userProvisionList = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="address_id", nullable = false)
+    private Address address;
+
 }

@@ -4,7 +4,9 @@ import com.example.umc_springboot.Domain.UserFoodType.Entity.UserFoodType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -22,5 +24,5 @@ public class FoodType {
     private String name;
 
     @OneToMany(mappedBy = "foodType")
-    private Set<UserFoodType> userFoodTypeSet = new HashSet<>();
+    private List<UserFoodType> userFoodTypeList = new ArrayList<>();
 }
