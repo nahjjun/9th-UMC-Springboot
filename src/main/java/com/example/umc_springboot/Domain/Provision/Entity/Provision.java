@@ -36,6 +36,8 @@ public class Provision extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private ProvisionProperty property;
 
+    // cascade와 orphanremover 설정 안해놓은 이유: 나중에 약관이 바뀌어도 법적 공방에서 해당 약관 동의 기록이 사용될 경우가 있기 때문임.
+    // 따라서, Provision과 UserProvision에서는 soft delete를 하는 것이 좋다. (향후 해당 API 짤 때 soft delete 가능하도록 리팩토링 하기!!)
     @OneToMany(mappedBy = "provision")
     private List<UserProvision> userProvisionList = new ArrayList<>();
 }

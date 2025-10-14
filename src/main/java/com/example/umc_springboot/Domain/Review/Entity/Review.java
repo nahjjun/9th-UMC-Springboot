@@ -41,6 +41,6 @@ public class Review extends BaseTimeEntity {
     private String body;
 
     // 리뷰:리뷰 사진 => 1:다 관계 매핑
-    @OneToMany(mappedBy = "review")
+    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ReviewPhoto> reviewPhotoList = new ArrayList<>();
 }

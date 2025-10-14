@@ -49,7 +49,7 @@ public class User extends BaseTimeEntity {
     @Column(name = "phone_number",  nullable = false, length = 15)
     private String phoneNumber;
 
-    @Column(name = "email",  nullable = false, length = 20)
+    @Column(name = "email",  nullable = false, length = 40)
     private String email;
 
     @Column(name = "point",  nullable = false)
@@ -64,13 +64,15 @@ public class User extends BaseTimeEntity {
     @Column(name="inactive_date")
     private LocalDate inactiveDate;
 
-    @OneToMany(mappedBy = "user")
+    // user가 삭제되거나 userStoreMissionList에서 특정 객체가 제거되면, 해당 테이블에서도 제거되도록 설정
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE,  orphanRemoval = true)
     private List<UserStoreMission> userStoreMissionList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE,  orphanRemoval = true)
     private List<UserFoodType> userFoodTypeList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE,  orphanRemoval = true)
     private List<UserProvision> userProvisionList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -23,6 +23,7 @@ public class FoodType {
     @Column(name = "name", nullable = false, length = 10)
     private String name;
 
-    @OneToMany(mappedBy = "foodType")
+    // 음식 타입 행이 사라지면 UserFoodType에 있는 데이터도 삭제되도록 설정.
+    @OneToMany(mappedBy = "foodType", cascade = CascadeType.REMOVE)
     private List<UserFoodType> userFoodTypeList = new ArrayList<>();
 }

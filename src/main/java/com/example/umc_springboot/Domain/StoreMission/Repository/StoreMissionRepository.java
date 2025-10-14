@@ -15,8 +15,8 @@ public interface StoreMissionRepository extends JpaRepository<StoreMission, Long
 
     @Query("select sm " +
             "from StoreMission sm " +
-            "join sm.store s " + // JPQL에서는 sql의 join on과 다르게, 설정해놓은 연관관계를 통해 join한다. 이렇게 하면 자동으로 on 조건이 생성된다.
-            "join s.address a " +
+            "join fetch sm.store s " + // JPQL에서는 sql의 join on과 다르게, 설정해놓은 연관관계를 통해 join한다. 이렇게 하면 자동으로 on 조건이 생성된다.
+            "join fetch s.address a " +
             "where a.city=:city and a.district=:district and a.dong=:dong"
     )
     Page<StoreMission> findByCityAndDistrictAndDong(@Param("city") City city, @Param("district") District district, @Param("dong")Dong dongm, Pageable pageable);

@@ -54,10 +54,10 @@ public class Store extends BaseTimeEntity {
     @Builder.Default
     private StoreStatus status = StoreStatus.ACTIVE;
 
-    @OneToMany(mappedBy = "store") // 해당 클래스에서 어떤 필드명으로 매핑되어있는지 지정
+    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE, orphanRemoval = true) // 해당 클래스에서 어떤 필드명으로 매핑되어있는지 지정
     private List<Review> reviewList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "store")
+    @OneToMany(mappedBy = "store", cascade =  CascadeType.REMOVE, orphanRemoval = true)
     private List<StoreMission> storeMissionList = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)

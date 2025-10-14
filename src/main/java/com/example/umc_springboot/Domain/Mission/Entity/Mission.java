@@ -39,7 +39,8 @@ public class Mission extends BaseTimeEntity {
     @Builder.Default
     private Integer point = 0;
 
-    @OneToMany(mappedBy = "mission")
+    // 미션 자체가 사라지면 storeMission도 사라지도록 설정. mission에서 list의 내용 삭제하면 해당 테이블에서 데이터 사라지게 설정
+    @OneToMany(mappedBy = "mission", cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<StoreMission> storeMissionList = new ArrayList<>();
 
 }
