@@ -9,6 +9,8 @@ import com.example.umc_springboot.Domain.UserProvision.Entity.UserProvision;
 import com.example.umc_springboot.Domain.UserStoreMission.Entity.UserStoreMission;
 import com.example.umc_springboot.Global.Entity.BaseTimeEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -37,6 +39,17 @@ public class User extends BaseTimeEntity {
 
     @Column(name = "nickname",  nullable = false, length = 10)
     private String nickname;
+
+    @Column(name="password", nullable = false)
+    @Size(min = 10, max=15)
+    @Pattern(
+            regexp = "^(?=.*[A-Za-z])(?=.*[!@#$%^&*(),.?\":{}|<>]).{10,15}$",
+            // (?=.*[A-Za-z]): 영문자가 최소 1개 이상 포함
+            // (?=.*[!@#$%^&*(),.?":{}|<>]): 특수문자가 최소 1개 이상 포함
+            // .{10,15}: 전체 길이가 10~15자
+            message = "비밀번호는 영문자와 특수문자를 반드시 포함해야 합니다."
+    )
+    private String password;
 
     @Column(name = "gender",  nullable = false)
     @Builder.Default
