@@ -38,7 +38,6 @@ public class User extends BaseTimeEntity {
     private String nickname;
 
     @Column(name="password", nullable = false)
-    @Size(min = 10, max=15)
     private String password;
 
     @Column(name = "gender",  nullable = false)

@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<GlobalResponse<?>> handleException(Exception e){
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(GlobalResponse.error("500", "예상치 못한 서버 오류가 발생했습니다."));
+                .body(GlobalResponse.error("500", e.getMessage()));
     }
 
 

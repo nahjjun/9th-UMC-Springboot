@@ -21,6 +21,7 @@ public class AddressMapper {
                 .city(EnumUtil.toEnum(City.class, dto.getCity(), "city"))
                 .district(EnumUtil.toEnum(District.class, dto.getDistrict(), "district"))
                 .dong(EnumUtil.toEnum(Dong.class, dto.getDong(), "dong"))
+                .detail(dto.getDetail())
                 .build();
     }
 

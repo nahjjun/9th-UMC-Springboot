@@ -63,6 +63,7 @@ public class UserService {
         if(user == null){
             throw new CustomException(UserErrorCode.USER_NOT_FOUND);
         }
+        System.out.println("사용자 정보 조회 완료");
         return userMapper.toUserInfoResponseDto(user);
     }
 

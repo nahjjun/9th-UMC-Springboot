@@ -36,9 +36,11 @@ public class UserMapper {
                         .detail(joinRequestDto.getDetail())
                         .build()
         );
-        System.out.println(address.getDetail());
 
-        return User.builder()
+
+        System.out.println("User를 위한 Address 생성 완료");
+
+        User user = User.builder()
                 .name(joinRequestDto.getName())
                 .nickname(joinRequestDto.getNickname())
                 .password(passwordEncoder.encode(joinRequestDto.getPassword()))
@@ -48,6 +50,10 @@ public class UserMapper {
                 .email(joinRequestDto.getEmail())
                 .address(address)
                 .build();
+
+        // User - Address 양방향 매핑
+        user.getAddress().getUserList().add(user);
+        return user;
     }
 
     /**
@@ -65,7 +71,10 @@ public class UserMapper {
                 .phoneNumber(user.getPhoneNumber())
                 .email(user.getEmail())
                 .point(user.getPoint())
-                .address(user.getAddress())
+                .city(user.getAddress().getCity().name())
+                .district(user.getAddress().getDistrict().name())
+                .dong(user.getAddress().getDong().name())
+                .detail(user.getAddress().getDetail())
                 .build();
     }
 

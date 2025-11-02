@@ -41,6 +41,7 @@ public class Address {
     private String detail;
 
     @OneToMany(mappedBy = "address")
+    @Builder.Default
     private List<User> userList = new ArrayList<>();
 
     @OneToOne(mappedBy = "address")
