@@ -1,0 +1,29 @@
+package com.example.umc_springboot.domain.address.mapper;
+
+
+import com.example.umc_springboot.domain.address.entity.Address;
+import com.example.umc_springboot.domain.address.enums.City;
+import com.example.umc_springboot.domain.address.enums.District;
+import com.example.umc_springboot.domain.address.enums.Dong;
+import com.example.umc_springboot.domain.address.dto.Request.AddressRequestDto;
+import com.example.umc_springboot.global.util.EnumUtil;
+import org.springframework.stereotype.Component;
+
+@Component
+public class AddressMapper {
+    /**
+     * UserService에서 사용되는 Address 매핑용 DTO인 JoinRequestAddressDto를 Address로 변환하는 함수
+     * @param dto
+     * @return : Address 객체
+     */
+    public Address toAddress(AddressRequestDto dto){
+        return Address.builder()
+                .city(EnumUtil.toEnum(City.class, dto.getCity(), "city"))
+                .district(EnumUtil.toEnum(District.class, dto.getDistrict(), "district"))
+                .dong(EnumUtil.toEnum(Dong.class, dto.getDong(), "dong"))
+                .detail(dto.getDetail())
+                .build();
+    }
+
+
+}
