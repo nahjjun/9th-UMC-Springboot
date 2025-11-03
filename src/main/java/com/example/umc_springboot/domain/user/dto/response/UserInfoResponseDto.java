@@ -2,6 +2,10 @@ package com.example.umc_springboot.domain.user.dto.response;
 
 
 import com.example.umc_springboot.domain.address.entity.Address;
+import com.example.umc_springboot.domain.address.enums.City;
+import com.example.umc_springboot.domain.address.enums.District;
+import com.example.umc_springboot.domain.address.enums.Dong;
+import com.example.umc_springboot.domain.user.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,13 +21,13 @@ public class UserInfoResponseDto {
     private Long id;
     private String name;
     private String nickname;
-    private String gender;
+    private Gender gender;
     private LocalDate birth;
     private String phoneNumber;
     private String email;
     private Integer point;
-    private String city;
-    private String district;
-    private String dong;
+    private City city;
+    private District district;
+    private Dong dong;
     private String detail;
 }

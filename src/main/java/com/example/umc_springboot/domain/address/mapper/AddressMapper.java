@@ -18,9 +18,9 @@ public class AddressMapper {
      */
     public Address toAddress(AddressRequestDto dto){
         return Address.builder()
-                .city(EnumUtil.toEnum(City.class, dto.getCity(), "city"))
-                .district(EnumUtil.toEnum(District.class, dto.getDistrict(), "district"))
-                .dong(EnumUtil.toEnum(Dong.class, dto.getDong(), "dong"))
+                .city(dto.getCity())
+                .district(dto.getDistrict())
+                .dong(dto.getDong())
                 .detail(dto.getDetail())
                 .build();
     }

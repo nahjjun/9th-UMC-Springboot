@@ -31,7 +31,7 @@ public class UserStoreMissionService {
 
         // 굳이 existByUserId()로 존재 여부를 확인하지 않고, 그냥 findBy...로 가져와서 빈 리스트를 반환하는 것이 더욱 Restful한 설계일 것이다.
         // 페이징을 위한 Pageable 객체 선언
-        Pageable pageable = (Pageable) PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Pageable pageable = (Pageable)PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         // UserStoreMission 페이지 조회
         Page<UserStoreMission> pageResult = userStoreMissionRepository.findByUserIdAndStatus(userId, status, pageable);

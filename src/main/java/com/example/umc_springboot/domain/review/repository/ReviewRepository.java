@@ -1,9 +1,12 @@
 package com.example.umc_springboot.domain.review.repository;
 
 import com.example.umc_springboot.domain.review.entity.Review;
+import com.example.umc_springboot.domain.review.repository.querydsl.ReviewQueryDsl;
+import com.example.umc_springboot.domain.review.repository.querydsl.ReviewQueryDslImpl;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ReviewRepository extends JpaRepository<Review, Long> {
+// ReviewQueryDsl을 상속받고, 해당 인터페이스를 사용하게 되면, ReviewQueryDslImpl 구현체
+public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewQueryDsl {
 
     // 사용자 아이디와 가게 아이디가 같은 리뷰가 존재하는지 확인
     // 사용자가 리뷰를 등록할 때, 해당 사용자가 그 가게에 리뷰를 등록했는지 여부를 확인해야하기 때문임
@@ -18,5 +21,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 //                    "where a1.dong = :dong", nativeQuery = true
 //    )
 //    List<Review> searchReviewByAddressDong(@Param("dong") String dong);
+
+
 
 }

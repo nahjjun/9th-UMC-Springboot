@@ -1,5 +1,8 @@
 package com.example.umc_springboot.domain.user.dto.request;
 
+import com.example.umc_springboot.domain.address.enums.City;
+import com.example.umc_springboot.domain.address.enums.District;
+import com.example.umc_springboot.domain.address.enums.Dong;
 import com.example.umc_springboot.domain.user.enums.Gender;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -25,7 +28,7 @@ public class JoinRequestDto {
     private final String password;
 
     @Builder.Default
-    private final String gender = Gender.NONE.name();
+    private final Gender gender = Gender.NONE;
 
     @NotNull(message="생년월일은 비워둘 수 없습니다.")
     private final LocalDate birth;
@@ -38,13 +41,13 @@ public class JoinRequestDto {
     private final String email;
 
     @NotBlank(message="도시는 비워둘 수 없습니다.")
-    private final String city;
+    private final City city;
 
     @NotBlank(message="구는 비워둘 수 없습니다.")
-    private final String district;
+    private final District district;
 
     @NotBlank(message="동은 비워둘 수 없습니다.")
-    private final String dong;
+    private final Dong dong;
 
     @NotBlank(message="상세 주소는 비워둘 수 없습니다.")
     @Size(max=40, message = "상세 주소는 40자 이하로 작성하여야 합니다.")

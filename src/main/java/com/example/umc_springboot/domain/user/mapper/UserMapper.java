@@ -7,8 +7,6 @@ import com.example.umc_springboot.domain.address.dto.Request.AddressRequestDto;
 import com.example.umc_springboot.domain.user.dto.request.JoinRequestDto;
 import com.example.umc_springboot.domain.user.dto.response.UserInfoResponseDto;
 import com.example.umc_springboot.domain.user.entity.User;
-import com.example.umc_springboot.domain.user.enums.Gender;
-import com.example.umc_springboot.global.util.EnumUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -44,7 +42,7 @@ public class UserMapper {
                 .name(joinRequestDto.getName())
                 .nickname(joinRequestDto.getNickname())
                 .password(passwordEncoder.encode(joinRequestDto.getPassword()))
-                .gender(EnumUtil.toEnum(Gender.class, joinRequestDto.getGender(), "gender")) // Enum으로 변환해서 생성
+                .gender(joinRequestDto.getGender()) // Enum으로 변환해서 생성
                 .birth(joinRequestDto.getBirth())
                 .phoneNumber(joinRequestDto.getPhoneNumber())
                 .email(joinRequestDto.getEmail())
@@ -66,14 +64,14 @@ public class UserMapper {
                 .id(user.getId())
                 .name(user.getName())
                 .nickname(user.getNickname())
-                .gender(user.getGender().name())
+                .gender(user.getGender())
                 .birth(user.getBirth())
                 .phoneNumber(user.getPhoneNumber())
                 .email(user.getEmail())
                 .point(user.getPoint())
-                .city(user.getAddress().getCity().name())
-                .district(user.getAddress().getDistrict().name())
-                .dong(user.getAddress().getDong().name())
+                .city(user.getAddress().getCity())
+                .district(user.getAddress().getDistrict())
+                .dong(user.getAddress().getDong())
                 .detail(user.getAddress().getDetail())
                 .build();
     }
