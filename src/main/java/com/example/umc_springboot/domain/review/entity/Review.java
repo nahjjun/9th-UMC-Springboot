@@ -30,14 +30,15 @@ public class Review extends BaseTimeEntity {
     @JoinColumn(name="store_id", nullable = false)
     private Store store;
 
-    @Column(name="score", nullable = false)
+    @Column(name="star", nullable = false)
     @Builder.Default
-    private Integer score = 0;
+    private Integer star = 0;
 
     @Column(name="body", nullable = false, length = 1000)
     private String body;
 
     // 리뷰:리뷰 사진 => 1:다 관계 매핑
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @Builder.Default
     private List<ReviewPhoto> reviewPhotoList = new ArrayList<>();
 }

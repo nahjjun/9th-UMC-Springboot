@@ -1,13 +1,16 @@
 package com.example.umc_springboot.domain.address.dto.Request;
 
+import com.example.umc_springboot.domain.address.enums.City;
+import com.example.umc_springboot.domain.address.enums.District;
+import com.example.umc_springboot.domain.address.enums.Dong;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
 public class AddressRequestDto {
-    private final String city;
-    private final String district;
-    private final String dong;
+    private final City city;
+    private final District district;
+    private final Dong dong;
     private final String detail;
 }

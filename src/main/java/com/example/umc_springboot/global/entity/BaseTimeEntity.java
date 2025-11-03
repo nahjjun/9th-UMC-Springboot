@@ -3,6 +3,7 @@ package com.example.umc_springboot.global.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
+import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
     // ㄴ> AuditingEntityListener : Spring Data JPA 제공 클래스
     // 엔티티가 persist(저장)되거나 update(수정)될 때 이벤트를 가로채서, 날짜/사용자 정보를 자동으로 기록함.
     // @EnableJpaAuditing을 활성화해야 동작함
+@Getter
 public abstract class BaseTimeEntity {
     @CreatedDate // 엔티티가 처음 저장될 때 자동으로 현재 시간이 들어감
     @Column(updatable = false) // updatable를 false로 설정하면 이후 수정 시 값이 변경되지 않는다.
