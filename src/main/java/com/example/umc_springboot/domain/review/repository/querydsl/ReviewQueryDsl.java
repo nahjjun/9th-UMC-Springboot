@@ -14,11 +14,11 @@ public interface ReviewQueryDsl {
      * 리뷰 검색 API (페이징 없음)
      * @param predicate : where 절 조건 객체. BooleanBuilder는 Predicate를 구현한 구현체이다.
      */
-    List<Review> searchReview(Predicate predicate);
+    List<Review> searchReviews(Predicate predicate);
     /**
      * 리뷰 검색 API(페이징 있음)
      * @param predicate : where 절 조건 객체. BooleanBuilder는 Predicate를 구현한 구현체이다.
      * @param pageable : pageable 객체
      */
-    Page<Review> searchReview(Predicate predicate, Pageable pageable);
+    Page<Review> searchReviews(Predicate predicate, Pageable pageable);
 }

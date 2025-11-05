@@ -35,7 +35,8 @@ public class SecurityConfig {
             "/v3/api-docs.yaml",
 
             // JWT 인증 구현 전, 임시로 모든 경로 허용하기
-            "/users/**"
+            "/users/**",
+            "/reviews/**",
     };
 
 

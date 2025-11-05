@@ -3,6 +3,9 @@ package com.example.umc_springboot.domain.review.repository.querydsl;
 import com.example.umc_springboot.domain.review.entity.QReview;
 import com.example.umc_springboot.domain.review.entity.Review;
 import com.example.umc_springboot.domain.review.repository.ReviewRepository;
+import com.example.umc_springboot.domain.reviewPhoto.entity.QReviewPhoto;
+import com.example.umc_springboot.domain.store.entity.QStore;
+import com.example.umc_springboot.domain.user.entity.QUser;
 import com.example.umc_springboot.global.util.QueryDslUtil;
 import com.querydsl.core.QueryFactory;
 import com.querydsl.core.types.Predicate;
@@ -22,15 +25,12 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class ReviewQueryDslImpl implements ReviewQueryDsl {
-    private final EntityManager em; // JPA 핵심 객체. 영속성 컨텍스트를 관리함
-
+    private final JPAQueryFactory queryFactory;
     /**
      * 리뷰 검색 API
      */
     @Override
-    public List<Review> searchReview(Predicate predicate) {
-        // 1. JPA 세팅
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+    public List<Review> searchReviews(Predicate predicate) {
 
         // 2. Q클래스 선언하기
         QReview review = QReview.review;
@@ -45,33 +45,44 @@ public class ReviewQueryDslImpl implements ReviewQueryDsl {
      * 리뷰 검색 API
      */
     @Override
-    public Page<Review> searchReview(Predicate predicate, Pageable pageable) {
-        // 1. JPA 세팅
-        // JPAQeuryFactory : JPA 환경에서 타입 안전한 쿼리를 쉽게 작성하도록 도와주는 클래스
-        // EntityManager를 기반으로 생성되며, 실제 결과를 가져오는 역할도 함
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-
-        // 2. Q클래스 선언하기
+    public Page<Review> searchReviews(Predicate predicate, Pageable pageable) {
+        // 1. Q클래스 선언하기
         QReview review = QReview.review;
+        QStore store = QStore.store;
+        QUser user = QUser.user;
 
-        // 3. Predicate, Pageable에 맞는 데이터 내용 가져오기
-        List<Review> content = queryFactory
-                .selectFrom(review)
+        // 2. 2-step 페이지네이션
+        // 2-1. 루트  Predicate, Pageable에 맞는 Review의 PK만 가져온다.
+        List<Long> pks = queryFactory
+                .select(review.id)
+                .from(review)
                 .where(predicate)
                 .offset(pageable.getOffset()) // 페이지 번호
                 .limit(pageable.getPageSize()) // 페이지에 들어가는 데이터 개수
                 .orderBy(QueryDslUtil.getOrderSpecifiers(pageable, review)) // OrderSpecifier<?>[]로 변환해서 넘겨줘야함.
                 .fetch();
 
-        // 4. 해당 조건(Predicate)에 맞는 데이터의 총 개수를 구하는 쿼리
+        // 2-2. 페이징처리된 pk들을 이용하여, toOne 관계에 있는 테이블들을 fetch join 시킨다.
+            // pk와 동일한 record들만 가져온다.
+            // ~ToOne 관계에서는 left join 후 Fetch join해도 된다! => Fetch join해도 행이 증식하지 않기 때문이다.
+            // 다만, ~ToMany 관계에서 fetch join을 하게 되면 행이 증식하므로 하면 안된다.
+        List<Review> content = queryFactory
+                .selectFrom(review)
+                .leftJoin(review.store, store).fetchJoin()
+                .leftJoin(review.user, user).fetchJoin()
+                .where(review.id.in(pks)) // 해당 review의 id가 pks 리스트 안에 있으면 가져오라는 조건문
+                .fetch();
+
+        // 3. 해당 조건(Predicate)에 맞는 데이터의 총 개수를 구하는 쿼리
         // Page<T>는 전체 페이지/전체 검색 개수를 포함해야하므로, 조건에 매칭되는 총 건수가 필요하다.
         // 해당 값으로 총 페이지 수와 다음/이전 페이지 존재 여부를 정확하게 계산한다.
+        // => count 쿼리에는
         JPAQuery<Long> countQuery = queryFactory
                 .select(review.count())
                 .from(review)
                 .where(predicate);
 
-        // 5. PageableExecutionUtils 클래스의 .getPage() 함수: List<Review>인 content를 감싸주는 헬퍼 메서드임
+        // 4. PageableExecutionUtils 클래스의 .getPage() 함수: List<Review>인 content를 감싸주는 헬퍼 메서드임
         // 이미 페이징된 데이터(content)와 pageable 정보를 받아서, 필요한 경우 count 쿼리를 실행해 Page 객체를 만들어준다.
         // getPage(List<T> content, Pageable pageable, LongSupplier totalSupplier)
             // content : 현재 페이지의 데이터 리스트
