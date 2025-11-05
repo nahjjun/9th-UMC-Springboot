@@ -6,6 +6,7 @@ import com.example.umc_springboot.domain.user.entity.User;
 import com.example.umc_springboot.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,5 +41,8 @@ public class Review extends BaseTimeEntity {
     // 리뷰:리뷰 사진 => 1:다 관계 매핑
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @Builder.Default
+    // fetch join 시 n+1 문제를 예방하고자 @BatchSize를 지정해주었음.
+    // 100개씩 묶어서 연관 데이터를 지연로딩 시켜준다.
+    @BatchSize(size=100)
     private List<ReviewPhoto> reviewPhotoList = new ArrayList<>();
 }

@@ -23,5 +23,4 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewQue
 //    List<Review> searchReviewByAddressDong(@Param("dong") String dong);
 
 
-
 }
