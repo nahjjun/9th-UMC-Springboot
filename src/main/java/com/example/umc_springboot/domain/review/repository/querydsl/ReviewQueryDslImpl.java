@@ -1,9 +1,12 @@
 package com.example.umc_springboot.domain.review.repository.querydsl;
 
+import com.example.umc_springboot.domain.review.dto.response.ReviewResponseDto;
 import com.example.umc_springboot.domain.review.entity.QReview;
 import com.example.umc_springboot.domain.review.entity.Review;
+import com.example.umc_springboot.domain.review.mapper.ReviewMapper;
 import com.example.umc_springboot.domain.review.repository.ReviewRepository;
 import com.example.umc_springboot.domain.reviewPhoto.entity.QReviewPhoto;
+import com.example.umc_springboot.domain.reviewPhoto.entity.ReviewPhoto;
 import com.example.umc_springboot.domain.store.entity.QStore;
 import com.example.umc_springboot.domain.user.entity.QUser;
 import com.example.umc_springboot.global.util.QueryDslUtil;
@@ -11,7 +14,6 @@ import com.querydsl.core.QueryFactory;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,12 +22,17 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.list;
 
 // 커스텀 레포지토리임을 표현해주기 위해 @Service가 아니라 @Repository를 붙인다.
 @Repository
 @RequiredArgsConstructor
 public class ReviewQueryDslImpl implements ReviewQueryDsl {
     private final JPAQueryFactory queryFactory;
+    private final ReviewMapper reviewMapper;
     /**
      * 리뷰 검색 API
      */
@@ -45,11 +52,12 @@ public class ReviewQueryDslImpl implements ReviewQueryDsl {
      * 리뷰 검색 API
      */
     @Override
-    public Page<Review> searchReviews(Predicate predicate, Pageable pageable) {
+    public Page<ReviewResponseDto> searchReviews(Predicate predicate, Pageable pageable) {
         // 1. Q클래스 선언하기
         QReview review = QReview.review;
         QStore store = QStore.store;
         QUser user = QUser.user;
+        QReviewPhoto reviewPhoto = QReviewPhoto.reviewPhoto;
 
         // 2. 2-step 페이지네이션
         // 2-1. 루트  Predicate, Pageable에 맞는 Review의 PK만 가져온다.
@@ -73,7 +81,22 @@ public class ReviewQueryDslImpl implements ReviewQueryDsl {
                 .where(review.id.in(pks)) // 해당 review의 id가 pks 리스트 안에 있으면 가져오라는 조건문
                 .fetch();
 
-        // 3. 해당 조건(Predicate)에 맞는 데이터의 총 개수를 구하는 쿼리
+        // 3. PhotoList transform의 group by로 가져오기
+        // key는 review의 PK, value에는 해당 review에 등록된 사진들의 List.
+        Map<Long, List<String>> photoUrlMap = queryFactory
+                .from(reviewPhoto)
+                .where(reviewPhoto.review.id.in(pks)) // 페이징으로 조회한 review의 pk들 안에 reviewPhoto
+                .transform(
+                        groupBy(reviewPhoto.review.id).as(list(reviewPhoto.url))
+                );
+
+
+        // 4. fetch join으로 가져온 content + groupBy로 가져온 photoUrlMap으로 ReviewResponseDto를 조립한다.
+        List<ReviewResponseDto> dtoList = content.stream()
+                .map(r->reviewMapper.toReviewResponseDto(r, photoUrlMap))
+                .toList();
+
+        // 5. 해당 조건(Predicate)에 맞는 데이터의 총 개수를 구하는 쿼리
         // Page<T>는 전체 페이지/전체 검색 개수를 포함해야하므로, 조건에 매칭되는 총 건수가 필요하다.
         // 해당 값으로 총 페이지 수와 다음/이전 페이지 존재 여부를 정확하게 계산한다.
         // => count 쿼리에는
@@ -93,7 +116,7 @@ public class ReviewQueryDslImpl implements ReviewQueryDsl {
                 // (2) content가 비어 있는 경우 (content.isEmpty() == true) : 실행 안함
                 // (3) 위 두 조건 외 : 실행함 (전체 개수를 알아야 총 페이지 수 계산 가능)
                 // => 이 조건들은 getPage() 함수가 내부적으로 전부 처리한다.
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+        return PageableExecutionUtils.getPage(dtoList, pageable, countQuery::fetchOne);
     }
 
 }

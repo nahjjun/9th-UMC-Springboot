@@ -5,36 +5,27 @@ import com.example.umc_springboot.domain.review.entity.Review;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class ReviewMapper {
-
     /**
      * Review를 ReviewResponseDto로 변경해주는 함수
-     * @param review
+     * @param review : Review 엔티티
+     * @param photoUrlMap : key=reviewId, value=해당 리뷰에 담긴 사진들의 url 리스트
      * @return ReviewResponseDto : 해당 리뷰와 관련된 데이터들이 담겨 있음.
      */
-    public ReviewResponseDto toReviewResponseDto(Review review){
+    public ReviewResponseDto toReviewResponseDto(Review review, Map<Long, List<String>> photoUrlMap){
         if(review == null){
             return null;
         }
-        String storeName = null;
-        if(review.getStore() != null){
-            storeName = review.getStore().getName();
-        }
+        String storeName = review.getStore() != null ?  review.getStore().getName() : null;
+        String nickName = review.getUser() != null ? review.getUser().getName() : null;
 
-        String nickName = null;
-        if(review.getUser() != null){
-            nickName = review.getUser().getName();
-        }
-
-        List<String> photoUrls = new ArrayList<String>();
-        if (review.getReviewPhotoList() != null){
-            review.getReviewPhotoList().forEach(photo -> {
-                photoUrls.add(photo.getUrl());
-            });
-        }
+        // photoUrlMap에서 해당 리뷰의 pk에 맞는 사진 리스트가 있는지 찾고, 있으면 넣고 없으면 빈 리스트 넣어서 반환해준다.
+        List<String> photoUrls = photoUrlMap.getOrDefault(review.getId(), Collections.emptyList());
 
         return ReviewResponseDto.builder()
                 .reviewId(review.getId())
@@ -46,6 +37,4 @@ public class ReviewMapper {
                 .reviewDate(review.getCreatedAt().toLocalDate())
                 .build();
     }
-
-
 }
