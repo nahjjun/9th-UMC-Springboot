@@ -26,7 +26,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
-    private final ReviewMapper reviewMapper;
 
     /**
      * 들어온 검색 기준들을 기반으로 사용자가 작성한 리뷰를 검색해서 반환하는 함수
@@ -94,10 +93,8 @@ public class ReviewService {
 
         // 5. Pageable 클래스, 위에서 만든 BooleanBuilder를 Predicate로 전달해서 Page 가져오기
         // BooleanBuilder는 Predicate를 구현한 구체 클래스임
-        Page<Review> pageResult = reviewRepository.searchReviews(builder, pageable);
+        Page<ReviewResponseDto> pageResult = reviewRepository.searchReviews(builder, pageable);
 
-        return pageResult.map(reviewMapper::toReviewResponseDto)
-                .getContent(); // Page getContent() 함수로 하면 List를 반환한다.
+        return pageResult.getContent(); // Page getContent() 함수로 하면 List를 반환한다.
     }
-
 }
