@@ -1,6 +1,7 @@
 package com.example.umc_springboot.domain.review.controller;
 
 import com.example.umc_springboot.domain.address.enums.Dong;
+import com.example.umc_springboot.domain.review.dto.request.ReviewCreateRequestDto;
 import com.example.umc_springboot.domain.review.dto.request.ReviewSearchRequestDto;
 import com.example.umc_springboot.domain.review.dto.response.ReviewResponseDto;
 import com.example.umc_springboot.domain.review.enums.SearchRequestType;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
@@ -28,7 +30,31 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @Operation(
-            summary = "리뷰 정보들 가져오기",
+            summary = "리뷰 생성 API",
+            description = """
+                    리뷰를 생성해 특정 가게에 등록합니다.
+                    
+                    [인증 필요함]
+                    
+                    [Request Body]
+                    - userId: Long
+                    - storeId: Long
+                    - star: Integer (최대가 5)
+                    - body: String
+                    - reviewPhotoUrlList: List<String>
+                    """
+    )
+    @PostMapping("")
+    public ResponseEntity<GlobalResponse<?>> createReview(@RequestBody @Valid ReviewCreateRequestDto dto){
+        reviewService.createReview(dto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(GlobalResponse.success("리뷰 등록 성공!"));
+    }
+
+
+    @Operation(
+            summary = "리뷰 정보들 가져오는 API",
             description = """
                     검색 필터를 적용하여 리뷰 정보들을 가져옵니다.
                     

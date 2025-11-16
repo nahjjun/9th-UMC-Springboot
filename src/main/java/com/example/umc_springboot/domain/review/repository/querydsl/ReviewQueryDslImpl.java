@@ -59,27 +59,22 @@ public class ReviewQueryDslImpl implements ReviewQueryDsl {
         QUser user = QUser.user;
         QReviewPhoto reviewPhoto = QReviewPhoto.reviewPhoto;
 
-        // 2. 2-step 페이지네이션
-        // 2-1. 루트  Predicate, Pageable에 맞는 Review의 PK만 가져온다.
-        List<Long> pks = queryFactory
-                .select(review.id)
-                .from(review)
-                .where(predicate)
-                .offset(pageable.getOffset()) // 페이지 번호
-                .limit(pageable.getPageSize()) // 페이지에 들어가는 데이터 개수
-                .orderBy(QueryDslUtil.getOrderSpecifiers(pageable, review)) // OrderSpecifier<?>[]로 변환해서 넘겨줘야함.
-                .fetch();
 
-        // 2-2. 페이징처리된 pk들을 이용하여, toOne 관계에 있는 테이블들을 fetch join 시킨다.
-            // pk와 동일한 record들만 가져온다.
+        // 2. toOne 관계에 있는 테이블들을 fetch join 시킨다.
             // ~ToOne 관계에서는 left join 후 Fetch join해도 된다! => Fetch join해도 행이 증식하지 않기 때문이다.
             // 다만, ~ToMany 관계에서 fetch join을 하게 되면 행이 증식하므로 하면 안된다.
         List<Review> content = queryFactory
                 .selectFrom(review)
                 .leftJoin(review.store, store).fetchJoin()
                 .leftJoin(review.user, user).fetchJoin()
-                .where(review.id.in(pks)) // 해당 review의 id가 pks 리스트 안에 있으면 가져오라는 조건문
+                .offset(pageable.getOffset()) // 페이지 번호
+                .limit(pageable.getPageSize()) // 페이지에 들어가는 데이터 개수
+                .orderBy(QueryDslUtil.getOrderSpecifiers(pageable, review)) // OrderSpecifier<?>[]로 변환해서 넘겨줘야함.
                 .fetch();
+
+        // 조회한 데이터에서 Pk만 리스트로 뽑기
+        List<Long> pks = content.stream().map(Review::getId).toList();
+        // => pk 먼저 뽑는 방식 vs 이후에 pk 리스트로 변환하는 방식 성능 테스트 하기
 
         // 3. PhotoList transform의 group by로 가져오기
         // key는 review의 PK, value에는 해당 review에 등록된 사진들의 List.

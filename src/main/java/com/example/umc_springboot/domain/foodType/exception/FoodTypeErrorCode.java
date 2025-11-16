@@ -1,15 +1,14 @@
-package com.example.umc_springboot.domain.userStoreMission.exception;
+package com.example.umc_springboot.domain.foodType.exception;
 
 import com.example.umc_springboot.global.exception.model.BaseErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-@RequiredArgsConstructor
 @Getter
-public enum UserStoreMissionException implements BaseErrorCode {
-    USM_UNFILLED("USM_001", "해당 사용자의 미션 데이터가 완전하지 않습니다.", HttpStatus.BAD_REQUEST);
-
+@RequiredArgsConstructor
+public enum FoodTypeErrorCode implements BaseErrorCode {
+    FOOD_TYPE_ERROR("FT_001", "해당 FOOD TYPE을 DB에서 찾지 못했습니다.", HttpStatus.NOT_FOUND);
 
     private final String code;
     private final String message;

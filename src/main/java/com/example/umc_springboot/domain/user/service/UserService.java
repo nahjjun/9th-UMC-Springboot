@@ -3,18 +3,23 @@ package com.example.umc_springboot.domain.user.service;
 
 import com.example.umc_springboot.domain.address.entity.Address;
 import com.example.umc_springboot.domain.address.repository.AddressRepository;
+import com.example.umc_springboot.domain.foodType.entity.FoodType;
+import com.example.umc_springboot.domain.foodType.repository.FoodTypeRepository;
 import com.example.umc_springboot.domain.user.dto.request.JoinRequestDto;
 import com.example.umc_springboot.domain.user.dto.response.UserInfoResponseDto;
 import com.example.umc_springboot.domain.user.entity.User;
 import com.example.umc_springboot.domain.user.exception.UserErrorCode;
 import com.example.umc_springboot.domain.user.mapper.UserMapper;
 import com.example.umc_springboot.domain.user.repository.UserRepository;
+import com.example.umc_springboot.domain.userFoodType.repository.UserFoodTypeRepository;
 import com.example.umc_springboot.global.exception.CustomException;
 import com.example.umc_springboot.global.util.PasswordUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +27,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
+    private final FoodTypeRepository foodTypeRepository;
     private final PasswordUtil passwordUtil;
     private final UserMapper userMapper;
 
@@ -40,8 +46,20 @@ public class UserService {
         User user = userMapper.toEntity(joinRequestDto);
         System.out.println("사용자 생성 완료");
 
-        // 4. Address, User save
+        // 4. FoodType List 조회
+        List<FoodType> foodTypes = new ArrayList<>();
+        joinRequestDto.getFoodTypes().forEach(name -> {
+            foodTypes.add(foodTypeRepository.findByName(name).getFirst());
+        });
+
+        // 5. 조회된 FoodType 리스트로 user에 적용
+        foodTypes.forEach(foodType -> {
+            user.addFoodType(foodType);
+        });
+
+        // 6. Address, User save
         Address savedAddress = addressRepository.save(user.getAddress());
+
         User savedUser = userRepository.save(user);
     }
 
