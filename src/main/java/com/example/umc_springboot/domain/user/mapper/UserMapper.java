@@ -7,9 +7,13 @@ import com.example.umc_springboot.domain.address.dto.Request.AddressRequestDto;
 import com.example.umc_springboot.domain.user.dto.request.JoinRequestDto;
 import com.example.umc_springboot.domain.user.dto.response.UserInfoResponseDto;
 import com.example.umc_springboot.domain.user.entity.User;
+import com.example.umc_springboot.domain.userFoodType.entity.UserFoodType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor

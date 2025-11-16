@@ -1,6 +1,7 @@
 package com.example.umc_springboot.domain.review.service;
 
 import com.example.umc_springboot.domain.address.enums.Dong;
+import com.example.umc_springboot.domain.review.dto.request.ReviewCreateRequestDto;
 import com.example.umc_springboot.domain.review.dto.request.ReviewSearchRequestDto;
 import com.example.umc_springboot.domain.review.dto.response.ReviewResponseDto;
 import com.example.umc_springboot.domain.review.entity.QReview;
@@ -9,6 +10,13 @@ import com.example.umc_springboot.domain.review.enums.SearchRequestType;
 import com.example.umc_springboot.domain.review.exception.ReviewErrorCode;
 import com.example.umc_springboot.domain.review.mapper.ReviewMapper;
 import com.example.umc_springboot.domain.review.repository.ReviewRepository;
+import com.example.umc_springboot.domain.reviewPhoto.entity.ReviewPhoto;
+import com.example.umc_springboot.domain.store.entity.Store;
+import com.example.umc_springboot.domain.store.exception.StoreErrorCode;
+import com.example.umc_springboot.domain.store.repository.StoreRepository;
+import com.example.umc_springboot.domain.user.entity.User;
+import com.example.umc_springboot.domain.user.exception.UserErrorCode;
+import com.example.umc_springboot.domain.user.repository.UserRepository;
 import com.example.umc_springboot.global.exception.CustomException;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +34,31 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
+    private final ReviewMapper reviewMapper;
+    private final UserRepository userRepository;
+    private final StoreRepository storeRepository;
+
+    @Transactional
+    public void createReview(ReviewCreateRequestDto dto){
+        // 1. user 가져오기
+        User user = userRepository.findById(dto.userId()).orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
+
+        // 2. store 가져오기
+        Store store = storeRepository.findById(dto.storeId()).orElseThrow(() -> new CustomException(StoreErrorCode.STORE_NOT_FOUND));
+
+        // 3. user, store, dto로 review 생성
+        Review review = reviewMapper.toEntity(dto, user, store);
+
+        // 4. review Photo List에 reviewPhoto들 만들어서 추가
+        List<String> reviewPhotoList = dto.reviewPhotoUrlList();
+        reviewPhotoList.forEach(review::addReviewPhoto);
+
+        reviewRepository.save(review);
+    }
+
+
+
+
 
     /**
      * 들어온 검색 기준들을 기반으로 사용자가 작성한 리뷰를 검색해서 반환하는 함수

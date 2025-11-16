@@ -1,7 +1,10 @@
 package com.example.umc_springboot.domain.review.mapper;
 
+import com.example.umc_springboot.domain.review.dto.request.ReviewCreateRequestDto;
 import com.example.umc_springboot.domain.review.dto.response.ReviewResponseDto;
 import com.example.umc_springboot.domain.review.entity.Review;
+import com.example.umc_springboot.domain.store.entity.Store;
+import com.example.umc_springboot.domain.user.entity.User;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -11,6 +14,24 @@ import java.util.Map;
 
 @Component
 public class ReviewMapper {
+
+
+    /*
+    * ReviewCreateRequestDto -> Review로 변환하는 함수
+    *
+    * */
+    public Review toEntity(ReviewCreateRequestDto dto, User user, Store store) {
+        Review review = Review.builder()
+                .user(user)
+                .store(store)
+                .star(dto.star())
+                .body(dto.body())
+                .build();
+        return review;
+    }
+
+
+
     /**
      * Review를 ReviewResponseDto로 변경해주는 함수
      * @param review : Review 엔티티

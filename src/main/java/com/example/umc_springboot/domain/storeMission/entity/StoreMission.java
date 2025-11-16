@@ -43,7 +43,7 @@ public class StoreMission extends BaseTimeEntity {
     @Builder.Default
     private StoreMissionStatus status = StoreMissionStatus.ACTIVATE;
 
-    @OneToMany(mappedBy = "storeMission", cascade =  CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "storeMission", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<UserStoreMission> userStoreMissionList = new ArrayList<>();
 }
