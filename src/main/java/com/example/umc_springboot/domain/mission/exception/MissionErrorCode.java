@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum MissionErrorCode implements BaseErrorCode {
-    MISSION_NOT_FOUND("M_001", "미션을 찾지 못했습니다.", HttpStatus.NOT_FOUND);
+    MISSION_NOT_FOUND("M_001", "미션을 찾지 못했습니다.", HttpStatus.NOT_FOUND),
+    MISSION_INACTIVE("SM_002", "가게가 등록한 미션이 비활성화 상태입니다.", HttpStatus.FORBIDDEN);
 
     private final String code;
     private final String message;

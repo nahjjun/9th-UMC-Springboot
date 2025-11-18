@@ -7,11 +7,10 @@ import com.example.umc_springboot.domain.review.entity.Review;
 import com.example.umc_springboot.domain.user.enums.Gender;
 import com.example.umc_springboot.domain.user.enums.UserStatus;
 import com.example.umc_springboot.domain.userFoodType.entity.UserFoodType;
+import com.example.umc_springboot.domain.userMission.entity.UserMission;
 import com.example.umc_springboot.domain.userProvision.entity.UserProvision;
-import com.example.umc_springboot.domain.userStoreMission.entity.UserStoreMission;
 import com.example.umc_springboot.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -77,7 +76,7 @@ public class User extends BaseTimeEntity {
     * */ 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,  orphanRemoval = true)
     @Builder.Default
-    private List<UserStoreMission> userStoreMissionList = new ArrayList<>();
+    private List<UserMission> userMissionList = new ArrayList<>();
     
         
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,  orphanRemoval = true)

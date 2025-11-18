@@ -44,7 +44,7 @@ public class Address {
     @Builder.Default
     private List<User> userList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "address")
+    @OneToOne(mappedBy = "address", cascade = CascadeType.ALL, orphanRemoval = true)
     private Store store;
 
 

@@ -1,13 +1,12 @@
 package com.example.umc_springboot.domain.review.mapper;
 
-import com.example.umc_springboot.domain.review.dto.request.ReviewCreateRequestDto;
-import com.example.umc_springboot.domain.review.dto.response.ReviewResponseDto;
+import com.example.umc_springboot.domain.review.dto.request.ReviewCreateReqDto;
+import com.example.umc_springboot.domain.review.dto.response.ReviewResDto;
 import com.example.umc_springboot.domain.review.entity.Review;
 import com.example.umc_springboot.domain.store.entity.Store;
 import com.example.umc_springboot.domain.user.entity.User;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -17,17 +16,16 @@ public class ReviewMapper {
 
 
     /*
-    * ReviewCreateRequestDto -> Review로 변환하는 함수
+    * ReviewCreateReqDto -> Review로 변환하는 함수
     *
     * */
-    public Review toEntity(ReviewCreateRequestDto dto, User user, Store store) {
-        Review review = Review.builder()
+    public Review toEntity(ReviewCreateReqDto dto, User user, Store store) {
+        return Review.builder()
                 .user(user)
                 .store(store)
                 .star(dto.star())
                 .body(dto.body())
                 .build();
-        return review;
     }
 
 
@@ -36,9 +34,9 @@ public class ReviewMapper {
      * Review를 ReviewResponseDto로 변경해주는 함수
      * @param review : Review 엔티티
      * @param photoUrlMap : key=reviewId, value=해당 리뷰에 담긴 사진들의 url 리스트
-     * @return ReviewResponseDto : 해당 리뷰와 관련된 데이터들이 담겨 있음.
+     * @return ReviewResDto : 해당 리뷰와 관련된 데이터들이 담겨 있음.
      */
-    public ReviewResponseDto toReviewResponseDto(Review review, Map<Long, List<String>> photoUrlMap){
+    public ReviewResDto toReviewResponseDto(Review review, Map<Long, List<String>> photoUrlMap){
         if(review == null){
             return null;
         }
@@ -48,7 +46,7 @@ public class ReviewMapper {
         // photoUrlMap에서 해당 리뷰의 pk에 맞는 사진 리스트가 있는지 찾고, 있으면 넣고 없으면 빈 리스트 넣어서 반환해준다.
         List<String> photoUrls = photoUrlMap.getOrDefault(review.getId(), Collections.emptyList());
 
-        return ReviewResponseDto.builder()
+        return ReviewResDto.builder()
                 .reviewId(review.getId())
                 .storeName(storeName)
                 .nickname(nickName)

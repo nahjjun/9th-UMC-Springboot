@@ -2,11 +2,7 @@ package com.example.umc_springboot.domain.address.mapper;
 
 
 import com.example.umc_springboot.domain.address.entity.Address;
-import com.example.umc_springboot.domain.address.enums.City;
-import com.example.umc_springboot.domain.address.enums.District;
-import com.example.umc_springboot.domain.address.enums.Dong;
-import com.example.umc_springboot.domain.address.dto.Request.AddressRequestDto;
-import com.example.umc_springboot.global.util.EnumUtil;
+import com.example.umc_springboot.domain.address.dto.Request.AddressReqDto;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,7 +12,7 @@ public class AddressMapper {
      * @param dto
      * @return : Address 객체
      */
-    public Address toAddress(AddressRequestDto dto){
+    public Address toAddress(AddressReqDto dto){
         return Address.builder()
                 .city(dto.getCity())
                 .district(dto.getDistrict())

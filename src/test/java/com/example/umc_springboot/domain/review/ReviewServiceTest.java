@@ -1,12 +1,9 @@
 package com.example.umc_springboot.domain.review;
 
-import com.example.umc_springboot.UmcSpringBootApplication;
 import com.example.umc_springboot.domain.address.enums.Dong;
-import com.example.umc_springboot.domain.review.dto.response.ReviewResponseDto;
+import com.example.umc_springboot.domain.review.dto.response.ReviewResDto;
 import com.example.umc_springboot.domain.review.enums.SearchRequestType;
 import com.example.umc_springboot.domain.review.service.ReviewService;
-import com.example.umc_springboot.domain.user.dto.request.JoinRequestDto;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +30,7 @@ public class ReviewServiceTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt")); // 최신순 10개
 
         // when
-        List<ReviewResponseDto> results = reviewService.searchReviews(
+        List<ReviewResDto> results = reviewService.searchReviews(
                 dong, star, storeId, type, pageable
         );
 

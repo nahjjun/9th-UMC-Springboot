@@ -1,6 +1,6 @@
 package com.example.umc_springboot.domain.review.repository.querydsl;
 
-import com.example.umc_springboot.domain.review.dto.response.ReviewResponseDto;
+import com.example.umc_springboot.domain.review.dto.response.ReviewResDto;
 import com.example.umc_springboot.domain.review.entity.Review;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
@@ -21,5 +21,5 @@ public interface ReviewQueryDsl {
      * @param predicate : where 절 조건 객체. BooleanBuilder는 Predicate를 구현한 구현체이다.
      * @param pageable : pageable 객체
      */
-    Page<ReviewResponseDto> searchReviews(Predicate predicate, Pageable pageable);
+    Page<ReviewResDto> searchReviews(Predicate predicate, Pageable pageable);
 }

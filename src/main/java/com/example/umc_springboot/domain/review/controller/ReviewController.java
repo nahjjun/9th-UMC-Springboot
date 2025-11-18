@@ -1,9 +1,8 @@
 package com.example.umc_springboot.domain.review.controller;
 
 import com.example.umc_springboot.domain.address.enums.Dong;
-import com.example.umc_springboot.domain.review.dto.request.ReviewCreateRequestDto;
-import com.example.umc_springboot.domain.review.dto.request.ReviewSearchRequestDto;
-import com.example.umc_springboot.domain.review.dto.response.ReviewResponseDto;
+import com.example.umc_springboot.domain.review.dto.request.ReviewCreateReqDto;
+import com.example.umc_springboot.domain.review.dto.response.ReviewResDto;
 import com.example.umc_springboot.domain.review.enums.SearchRequestType;
 import com.example.umc_springboot.domain.review.service.ReviewService;
 import com.example.umc_springboot.global.response.GlobalResponse;
@@ -14,7 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +43,7 @@ public class ReviewController {
                     """
     )
     @PostMapping("")
-    public ResponseEntity<GlobalResponse<?>> createReview(@RequestBody @Valid ReviewCreateRequestDto dto){
+    public ResponseEntity<GlobalResponse<?>> createReview(@RequestBody @Valid ReviewCreateReqDto dto){
         reviewService.createReview(dto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -77,7 +75,7 @@ public class ReviewController {
             @Parameter(name = "sort", description = "정렬 기준(ex: createdAt,desc", example = "createdAt,desc")
     })
     @GetMapping("")
-    public ResponseEntity<GlobalResponse<List<ReviewResponseDto>>> searchReviews(
+    public ResponseEntity<GlobalResponse<List<ReviewResDto>>> searchReviews(
             @RequestParam(required = false) Dong dong,
             @RequestParam(defaultValue = "0") Integer star,
             @RequestParam(required = false) Long storeId,
@@ -85,8 +83,8 @@ public class ReviewController {
             Pageable pageable // page, size, sort 를 받을 수 있음
             // sort=star,asc는 star 기준으로 오름차순
     ) {
-        List<ReviewResponseDto> responseList = reviewService.searchReviews(dong, star, storeId, type, pageable);
-        GlobalResponse<List<ReviewResponseDto>> response =  GlobalResponse.success("리뷰들 검색 성공!", responseList);
+        List<ReviewResDto> responseList = reviewService.searchReviews(dong, star, storeId, type, pageable);
+        GlobalResponse<List<ReviewResDto>> response =  GlobalResponse.success("리뷰들 검색 성공!", responseList);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

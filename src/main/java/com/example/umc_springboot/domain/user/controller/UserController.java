@@ -1,8 +1,8 @@
 package com.example.umc_springboot.domain.user.controller;
 
 
-import com.example.umc_springboot.domain.user.dto.request.JoinRequestDto;
-import com.example.umc_springboot.domain.user.dto.response.UserInfoResponseDto;
+import com.example.umc_springboot.domain.user.dto.request.JoinReqDto;
+import com.example.umc_springboot.domain.user.dto.response.UserInfoResDto;
 import com.example.umc_springboot.domain.user.service.UserService;
 import com.example.umc_springboot.global.response.GlobalResponse;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
@@ -19,7 +19,6 @@ import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,15 +39,15 @@ public class UserController {
     @PostMapping("")
     public ResponseEntity<GlobalResponse<?>> join(
             @Parameter(
-                    name="joinRequestDto",
+                    name="joinReqDto",
                     description = "회원가입 때 필요한 사용자 정보"
             )
-            @Valid @RequestBody JoinRequestDto joinRequestDto)
+            @Valid @RequestBody JoinReqDto joinReqDto)
     {
-        userService.join(joinRequestDto);
+        userService.join(joinReqDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(GlobalResponse.success("회원가입 성공!"));
+                .body(GlobalResponse.success("201", "회원가입 성공!"));
     }
 
     @Operation(
@@ -91,10 +90,10 @@ public class UserController {
             @RequestParam(required = false) String field
     ) {
         // 1. 기본 필드(모든 데이터가 담긴 응답 dto)
-        UserInfoResponseDto responseDto = userService.getUserInfo(userId);
+        UserInfoResDto responseDto = userService.getUserInfo(userId);
 
         // 2. dto로 전역 Response 객체 생성
-        GlobalResponse<UserInfoResponseDto> response = GlobalResponse.success(responseDto);
+        GlobalResponse<UserInfoResDto> response = GlobalResponse.success(responseDto);
 
         // 3. 사용자에게 반환할 GlobalResponse로 직렬화 래퍼(MappingJacksonValue) 생성
         // MappingJacksonValue : json 직렬화를 처리하는데 사용되는 클래스

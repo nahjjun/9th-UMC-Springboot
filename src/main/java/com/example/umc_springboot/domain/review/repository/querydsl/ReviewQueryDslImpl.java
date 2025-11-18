@@ -1,16 +1,13 @@
 package com.example.umc_springboot.domain.review.repository.querydsl;
 
-import com.example.umc_springboot.domain.review.dto.response.ReviewResponseDto;
+import com.example.umc_springboot.domain.review.dto.response.ReviewResDto;
 import com.example.umc_springboot.domain.review.entity.QReview;
 import com.example.umc_springboot.domain.review.entity.Review;
 import com.example.umc_springboot.domain.review.mapper.ReviewMapper;
-import com.example.umc_springboot.domain.review.repository.ReviewRepository;
 import com.example.umc_springboot.domain.reviewPhoto.entity.QReviewPhoto;
-import com.example.umc_springboot.domain.reviewPhoto.entity.ReviewPhoto;
 import com.example.umc_springboot.domain.store.entity.QStore;
 import com.example.umc_springboot.domain.user.entity.QUser;
 import com.example.umc_springboot.global.util.QueryDslUtil;
-import com.querydsl.core.QueryFactory;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -19,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -52,7 +48,7 @@ public class ReviewQueryDslImpl implements ReviewQueryDsl {
      * 리뷰 검색 API
      */
     @Override
-    public Page<ReviewResponseDto> searchReviews(Predicate predicate, Pageable pageable) {
+    public Page<ReviewResDto> searchReviews(Predicate predicate, Pageable pageable) {
         // 1. Q클래스 선언하기
         QReview review = QReview.review;
         QStore store = QStore.store;
@@ -87,7 +83,7 @@ public class ReviewQueryDslImpl implements ReviewQueryDsl {
 
 
         // 4. fetch join으로 가져온 content + groupBy로 가져온 photoUrlMap으로 ReviewResponseDto를 조립한다.
-        List<ReviewResponseDto> dtoList = content.stream()
+        List<ReviewResDto> dtoList = content.stream()
                 .map(r->reviewMapper.toReviewResponseDto(r, photoUrlMap))
                 .toList();
 
