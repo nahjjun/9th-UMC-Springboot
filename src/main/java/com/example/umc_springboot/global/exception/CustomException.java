@@ -17,5 +17,4 @@ public class CustomException extends RuntimeException{
         // ㄴ> RuntimeException의 내부 message 필드를 채워주기 위함임
         this.errorCode = errorCode;
     }
-
 }

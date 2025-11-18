@@ -18,4 +18,23 @@ public class EnumUtil {
             throw new IllegalArgumentException(field + " has Invalid Value: " + value);
         }
     }
+
+
+    /**
+     * 특정 Enum Class 안에 해당 String이 있는지 확인하는 함수
+     * @param enumClass
+     * @return
+     * @param <E>
+     */
+    public static <E extends Enum<E>> boolean isInEnum(Class<E> enumClass, String input){
+        if (input == null) {
+            return false;
+        }
+        try {
+            Enum.valueOf(enumClass, input);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
 }

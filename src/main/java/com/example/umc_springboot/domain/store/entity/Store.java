@@ -2,10 +2,10 @@ package com.example.umc_springboot.domain.store.entity;
 
 import com.example.umc_springboot.domain.address.entity.Address;
 import com.example.umc_springboot.domain.boss.entity.Boss;
+import com.example.umc_springboot.domain.mission.entity.Mission;
 import com.example.umc_springboot.domain.review.entity.Review;
 import com.example.umc_springboot.domain.store.enums.StoreStatus;
 import com.example.umc_springboot.domain.store.enums.StoreType;
-import com.example.umc_springboot.domain.storeMission.entity.StoreMission;
 import com.example.umc_springboot.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,8 +32,9 @@ public class Store extends BaseTimeEntity {
         // N+1 문제 발생 가능함
         // => EAGER : 엔티티를 조회할 때 연관된 엔티티도 함께 가져온다.
         // 코드가 단순하지만 불필요한 조인/쿼리로 성능 저하 가능함
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="boss_id", nullable = false)
+    // @ManyToOne은 기본 설정이 Eager이고, OneToMany는 기본 설정이 Lazy이다.(컬렉션 필드는 기본적으로 지연 로딩이 기본이다.)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="boss_id")
     // Store 테이블에 boos_id라는 컬럼이 생기고, 해당 컬럼이 Boss 테이블의 PK를 참조하는 것
     private Boss boss;
 
@@ -52,13 +53,13 @@ public class Store extends BaseTimeEntity {
     @Builder.Default
     private StoreStatus status = StoreStatus.ACTIVE;
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE, orphanRemoval = true) // 해당 클래스에서 어떤 필드명으로 매핑되어있는지 지정
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true) // 해당 클래스에서 어떤 필드명으로 매핑되어있는지 지정
     @Builder.Default
     private List<Review> reviewList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "store", cascade =  CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "store", cascade =  CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<StoreMission> storeMissionList = new ArrayList<>();
+    private List<Mission> missionList = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="address_id", nullable = false)

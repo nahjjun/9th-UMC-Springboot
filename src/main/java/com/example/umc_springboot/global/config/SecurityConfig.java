@@ -37,6 +37,8 @@ public class SecurityConfig {
             // JWT 인증 구현 전, 임시로 모든 경로 허용하기
             "/users/**",
             "/reviews/**",
+            "/stores/**",
+            "/"
     };
 
 

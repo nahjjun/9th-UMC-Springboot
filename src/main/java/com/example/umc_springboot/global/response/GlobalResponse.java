@@ -41,6 +41,9 @@ public class GlobalResponse<T> {
     public static <T> GlobalResponse<T> success(String message) {
         return new GlobalResponse<T>(true, "200", message, null);
     }
+    public static <T> GlobalResponse<T> success(String code, String message) {
+        return new GlobalResponse<T>(true, "200", message, null);
+    }
     // 실패 응답 생성 함수
     public static <T> GlobalResponse<T> error(String code, String message){
         return new GlobalResponse<T>(false, code, message, null);

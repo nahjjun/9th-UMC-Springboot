@@ -1,14 +1,10 @@
 package com.example.umc_springboot.domain.mission.entity;
 
-import com.example.umc_springboot.domain.mission.enums.MissionModifier;
-import com.example.umc_springboot.domain.mission.enums.MissionType;
-import com.example.umc_springboot.domain.storeMission.entity.StoreMission;
+import com.example.umc_springboot.domain.store.entity.Store;
+import com.example.umc_springboot.domain.mission.enums.MissionStatus;
 import com.example.umc_springboot.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Entity
@@ -22,25 +18,22 @@ public class Mission extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "price_criteria", nullable=false)
-    private Integer priceCriteria;
-
-    @Column(name = "modifier", nullable=false)
-    @Enumerated(EnumType.STRING)
-    private MissionModifier modifier;
-
-    @Column(name = "type", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private MissionType type;
+    // 미션 내용
+    @Column(name= "detail", nullable = false)
+    private String detail;
 
     @Column(name = "point", nullable = false)
     @Builder.Default
     private Integer point = 0;
 
-    // 미션 자체가 사라지면 storeMission도 사라지도록 설정. mission에서 list의 내용 삭제하면 해당 테이블에서 데이터 사라지게 설정
-    @OneToMany(mappedBy = "mission", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
     @Builder.Default
-    List<StoreMission> storeMissionList = new ArrayList<>();
+    private MissionStatus status = MissionStatus.ACTIVATE;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id", nullable = false)
+    private Store store;
 
 }
 
