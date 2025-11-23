@@ -1,10 +1,12 @@
 package com.example.umc_springboot.domain.review.mapper;
 
 import com.example.umc_springboot.domain.review.dto.request.ReviewCreateReqDto;
+import com.example.umc_springboot.domain.review.dto.response.ReviewListResDto;
 import com.example.umc_springboot.domain.review.dto.response.ReviewResDto;
 import com.example.umc_springboot.domain.review.entity.Review;
 import com.example.umc_springboot.domain.store.entity.Store;
 import com.example.umc_springboot.domain.user.entity.User;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -56,4 +58,17 @@ public class ReviewMapper {
                 .reviewDate(review.getCreatedAt().toLocalDate())
                 .build();
     }
+
+
+    public ReviewListResDto toReviewListResponseDto(Page<ReviewResDto> pageResult){
+        return ReviewListResDto.builder()
+                .reviewList(pageResult.getContent())
+                .listSize(pageResult.getNumberOfElements())
+                .totalPage(pageResult.getTotalPages())
+                .totalElements(pageResult.getTotalElements())
+                .isFirst(pageResult.isFirst())
+                .isLast(pageResult.isLast())
+                .build();
+    }
+
 }

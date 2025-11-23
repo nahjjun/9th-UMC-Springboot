@@ -27,9 +27,9 @@ public class Review extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable = false) // Review 테이블에 "user_id"라는 이름의 컬럼이 하나 생기는 것, user의 PK를 참조한다.
-    private User user; // 사용자와 리뷰는 1대1 관계
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="store_id", nullable = false)
