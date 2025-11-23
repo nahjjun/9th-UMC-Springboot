@@ -91,8 +91,8 @@ public class User extends BaseTimeEntity {
     @JoinColumn(name="address_id", nullable = false)
     private Address address;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private Review review;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,  orphanRemoval = true)
+    private List<Review> review;
 
     /* FoodType을 입력 받아서 UserFoodType을 생성한 뒤 userFoodTypeList에 추가하는 메서드
         -> Cascade 설정을 all로 해두면, list에 추가한 후 commit하면 최종적으로 적용이 된다.

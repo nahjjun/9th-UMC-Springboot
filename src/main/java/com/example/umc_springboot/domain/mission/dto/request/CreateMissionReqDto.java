@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 
 public record CreateMissionReqDto(
         @NotBlank(message = "미션 내용을 입력해야합니다.")
-        String detail
+        String detail,
+        @NotBlank(message = "미션 포인트를 입력해야합니다.")
+        Integer point
 ) {
 }

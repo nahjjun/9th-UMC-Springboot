@@ -11,6 +11,8 @@ public enum SearchRequestType {
     DONG_STAR,
     @Schema(description = "해당 가게에 등록된 리뷰들을 검색 요청")
     STORE,
+    @Schema(description = "해당 사용자가 작성한 리뷰들을 검색 요청")
+    USER,
     @Schema(description = "해당 가게에 등록된 리뷰들 중 별점을 기준으로 검색 요청")
     STORE_STAR,
 }
