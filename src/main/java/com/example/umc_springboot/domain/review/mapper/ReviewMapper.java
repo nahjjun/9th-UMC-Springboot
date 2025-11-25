@@ -1,12 +1,10 @@
 package com.example.umc_springboot.domain.review.mapper;
 
 import com.example.umc_springboot.domain.review.dto.request.ReviewCreateReqDto;
-import com.example.umc_springboot.domain.review.dto.response.ReviewListResDto;
 import com.example.umc_springboot.domain.review.dto.response.ReviewResDto;
 import com.example.umc_springboot.domain.review.entity.Review;
 import com.example.umc_springboot.domain.store.entity.Store;
 import com.example.umc_springboot.domain.user.entity.User;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -38,7 +36,7 @@ public class ReviewMapper {
      * @param photoUrlMap : key=reviewId, value=해당 리뷰에 담긴 사진들의 url 리스트
      * @return ReviewResDto : 해당 리뷰와 관련된 데이터들이 담겨 있음.
      */
-    public ReviewResDto toReviewResponseDto(Review review, Map<Long, List<String>> photoUrlMap){
+    public ReviewResDto toReviewResDto(Review review, Map<Long, List<String>> photoUrlMap){
         if(review == null){
             return null;
         }
@@ -56,18 +54,6 @@ public class ReviewMapper {
                 .body(review.getBody())
                 .photoUrls(photoUrls)
                 .reviewDate(review.getCreatedAt().toLocalDate())
-                .build();
-    }
-
-
-    public ReviewListResDto toReviewListResponseDto(Page<ReviewResDto> pageResult){
-        return ReviewListResDto.builder()
-                .reviewList(pageResult.getContent())
-                .listSize(pageResult.getNumberOfElements())
-                .totalPage(pageResult.getTotalPages())
-                .totalElements(pageResult.getTotalElements())
-                .isFirst(pageResult.isFirst())
-                .isLast(pageResult.isLast())
                 .build();
     }
 

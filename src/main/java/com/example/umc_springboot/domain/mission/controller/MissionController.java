@@ -3,11 +3,12 @@ package com.example.umc_springboot.domain.mission.controller;
 
 import com.example.umc_springboot.domain.mission.dto.request.ChallengeMissionReqDto;
 import com.example.umc_springboot.domain.mission.dto.request.CreateMissionReqDto;
-import com.example.umc_springboot.domain.mission.dto.response.MissionListResDto;
+import com.example.umc_springboot.domain.mission.dto.response.MissionResDto;
 import com.example.umc_springboot.domain.mission.service.MissionService;
 import com.example.umc_springboot.domain.userMission.enums.UserMissionStatus;
 import com.example.umc_springboot.global.annotation.PageZero;
 import com.example.umc_springboot.global.response.GlobalResponse;
+import com.example.umc_springboot.global.response.PageResponse;
 import com.example.umc_springboot.global.util.PageUtil;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -43,17 +44,17 @@ public class MissionController implements MissionControllerDocs{
     }
 
     @Override
-    public ResponseEntity<GlobalResponse<MissionListResDto>> searchUserMissions(
+    public ResponseEntity<GlobalResponse<PageResponse<MissionResDto>>> searchUserMissions(
             @PathVariable @NotNull Long userId,
             @RequestParam(defaultValue = "IN_PROGRESS") @NotNull UserMissionStatus missionType,
             @PageZero Integer page,
             Integer size,
             String sort){
         Pageable pageable = PageRequest.of(page - 1, size, pageUtil.parseSort(sort));
-        MissionListResDto responseDto = missionService.searchUserMissions(userId, missionType, pageable);
+        PageResponse<MissionResDto> response = missionService.searchUserMissions(userId, missionType, pageable);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(GlobalResponse.success("사용자가 할당받은 미션 목록 조회 성공!", responseDto));
+                .body(GlobalResponse.success("사용자가 할당받은 미션 목록 조회 성공!", response));
     }
 
 }

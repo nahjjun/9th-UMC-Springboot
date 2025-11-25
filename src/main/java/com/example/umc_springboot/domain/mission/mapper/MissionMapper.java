@@ -2,7 +2,6 @@ package com.example.umc_springboot.domain.mission.mapper;
 
 
 import com.example.umc_springboot.domain.mission.dto.request.CreateMissionReqDto;
-import com.example.umc_springboot.domain.mission.dto.response.MissionListResDto;
 import com.example.umc_springboot.domain.mission.dto.response.MissionResDto;
 import com.example.umc_springboot.domain.mission.entity.Mission;
 import com.example.umc_springboot.domain.store.entity.Store;
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -45,18 +43,4 @@ public class MissionMapper {
                 .build();
     }
 
-    public MissionListResDto toMissionListResDto(Page<UserMission> pageResult){
-        List<MissionResDto> missionList = pageResult.getContent().stream()
-                .map(this::toMissionResDto)
-                .toList();
-
-        return MissionListResDto.builder()
-                .missionList(missionList)
-                .listSize(pageResult.getNumberOfElements())
-                .totalPage(pageResult.getTotalPages())
-                .totalElements(pageResult.getTotalElements())
-                .isFirst(pageResult.isFirst())
-                .isLast(pageResult.isLast())
-                .build();
-    }
 }
