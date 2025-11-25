@@ -2,7 +2,7 @@ package com.example.umc_springboot.domain.mission.service;
 
 import com.example.umc_springboot.domain.mission.dto.request.ChallengeMissionReqDto;
 import com.example.umc_springboot.domain.mission.dto.request.CreateMissionReqDto;
-import com.example.umc_springboot.domain.mission.dto.response.MissionListResDto;
+import com.example.umc_springboot.domain.mission.dto.response.MissionResDto;
 import com.example.umc_springboot.domain.mission.entity.Mission;
 import com.example.umc_springboot.domain.mission.exception.MissionErrorCode;
 import com.example.umc_springboot.domain.mission.mapper.MissionMapper;
@@ -20,6 +20,7 @@ import com.example.umc_springboot.domain.userMission.enums.UserMissionStatus;
 import com.example.umc_springboot.domain.userMission.exception.UserMissionErrorCode;
 import com.example.umc_springboot.domain.userMission.repository.UserMissionRepository;
 import com.example.umc_springboot.global.exception.CustomException;
+import com.example.umc_springboot.global.response.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -84,11 +85,11 @@ public class MissionService {
      * 사용자가 할당받은 미션들의 목록을 조회하는 함수
      * @param userId
      * @param userMissionStatus
-     * @return MissionListResDto
+     * @return PageResponse<MissionResDto>
      */
     // querydsl로 리팩토링하기!!
     @Transactional(readOnly = true)
-    public MissionListResDto searchUserMissions(Long userId, UserMissionStatus userMissionStatus, Pageable pageable) {
+    public PageResponse<MissionResDto> searchUserMissions(Long userId, UserMissionStatus userMissionStatus, Pageable pageable) {
         // 1. 해당 사용자가 존재하지 않는지 확인
         if(!userRepository.existsById(userId)){
             throw new CustomException(UserErrorCode.USER_NOT_FOUND);
@@ -123,8 +124,10 @@ public class MissionService {
         }
 
         // 2. 페이징으로 해당 데이터 가져오기
-        Page<UserMission> pageResult =  userMissionRepository.findByUserIdAndStatus(userId, userMissionStatus, pageable);
-        return missionMapper.toMissionListResDto(pageResult);
+        Page<UserMission> pageData =  userMissionRepository.findByUserIdAndStatus(userId, userMissionStatus, pageable);
+
+        // 3. 페이징된 데이터로 entity -> mapper -> dto 변경한 뒤 PageResponse<MissionResDto>로 변경
+        return PageResponse.of(pageData, missionMapper::toMissionResDto);
     }
 
 }

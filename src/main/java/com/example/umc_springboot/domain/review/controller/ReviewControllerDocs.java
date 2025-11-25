@@ -3,10 +3,11 @@ package com.example.umc_springboot.domain.review.controller;
 
 import com.example.umc_springboot.domain.address.enums.Dong;
 import com.example.umc_springboot.domain.review.dto.request.ReviewCreateReqDto;
-import com.example.umc_springboot.domain.review.dto.response.ReviewListResDto;
+import com.example.umc_springboot.domain.review.dto.response.ReviewResDto;
 import com.example.umc_springboot.domain.review.enums.SearchRequestType;
 import com.example.umc_springboot.global.annotation.PageZero;
 import com.example.umc_springboot.global.response.GlobalResponse;
+import com.example.umc_springboot.global.response.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -64,7 +65,7 @@ public interface ReviewControllerDocs {
             @Parameter(name = "sort", description = "정렬 기준(ex: createdAt,desc", example = "createdAt,desc")
     })
     @GetMapping("")
-    ResponseEntity<GlobalResponse<ReviewListResDto>> searchReviews(
+    ResponseEntity<GlobalResponse<PageResponse<ReviewResDto>>> searchReviews(
             @RequestParam(required = false) Dong dong,
             @RequestParam(defaultValue = "0") Integer star,
             @RequestParam(required = false) Long storeId,

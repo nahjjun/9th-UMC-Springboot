@@ -2,7 +2,6 @@ package com.example.umc_springboot.domain.review.service;
 
 import com.example.umc_springboot.domain.address.enums.Dong;
 import com.example.umc_springboot.domain.review.dto.request.ReviewCreateReqDto;
-import com.example.umc_springboot.domain.review.dto.response.ReviewListResDto;
 import com.example.umc_springboot.domain.review.dto.response.ReviewResDto;
 import com.example.umc_springboot.domain.review.entity.QReview;
 import com.example.umc_springboot.domain.review.entity.Review;
@@ -18,6 +17,7 @@ import com.example.umc_springboot.domain.user.entity.User;
 import com.example.umc_springboot.domain.user.exception.UserErrorCode;
 import com.example.umc_springboot.domain.user.repository.UserRepository;
 import com.example.umc_springboot.global.exception.CustomException;
+import com.example.umc_springboot.global.response.PageResponse;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -63,7 +63,7 @@ public class ReviewService {
      * @return : dto에 들어있는 검색 기준으로 검색된 ReviewListResDto
      */
     @Transactional(readOnly = true)
-    public ReviewListResDto searchReviews(Dong dong, Integer star, Long storeId, Long userId, SearchRequestType type, Pageable pageable) {
+    public PageResponse<ReviewResDto> searchReviews(Dong dong, Integer star, Long storeId, Long userId, SearchRequestType type, Pageable pageable) {
         // 1. Q클래스 정의 - Q도메인 클래스
         // Q클래스는 엔티티를 QueryDSL이 이해할 수 있는 테이블 표현용 클래스로 변환한 것이다.
         // 프로젝트를 빌드하면, @Entity가 붙은 클래스들은 build/generated/... 폴더에 만들어진다.
@@ -129,9 +129,9 @@ public class ReviewService {
 
         // 5. Pageable 클래스, 위에서 만든 BooleanBuilder를 Predicate로 전달해서 Page 가져오기
         // BooleanBuilder는 Predicate를 구현한 구체 클래스임
-        Page<ReviewResDto> pageResult = reviewRepository.searchReviews(builder, pageable);
+        Page<ReviewResDto> pageData = reviewRepository.searchReviews(builder, pageable);
 
-        // 6. pageResult가 갖고 있는 메타 데이터를 ReviewListResDto에 담아서 반환
-        return reviewMapper.toReviewListResponseDto(pageResult);
+        // 6. Page<ReviewResDto> -> PageResponse<ReviewResDto>로 변환해서 반환
+        return PageResponse.of(pageData);
     }
 }

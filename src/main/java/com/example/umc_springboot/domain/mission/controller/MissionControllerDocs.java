@@ -2,17 +2,17 @@ package com.example.umc_springboot.domain.mission.controller;
 
 import com.example.umc_springboot.domain.mission.dto.request.ChallengeMissionReqDto;
 import com.example.umc_springboot.domain.mission.dto.request.CreateMissionReqDto;
-import com.example.umc_springboot.domain.mission.dto.response.MissionListResDto;
+import com.example.umc_springboot.domain.mission.dto.response.MissionResDto;
 import com.example.umc_springboot.domain.userMission.enums.UserMissionStatus;
 import com.example.umc_springboot.global.annotation.PageZero;
 import com.example.umc_springboot.global.response.GlobalResponse;
+import com.example.umc_springboot.global.response.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -71,7 +71,7 @@ public interface MissionControllerDocs {
             @Parameter(name = "sort", description = "정렬 기준(ex: createdAt,desc", example = "createdAt,desc")
     })
     @GetMapping("/users/{userId}/missions")
-    public ResponseEntity<GlobalResponse<MissionListResDto>> searchUserMissions(
+    public ResponseEntity<GlobalResponse<PageResponse<MissionResDto>>> searchUserMissions(
             @PathVariable @NotNull Long userId,
             @RequestParam(defaultValue = "IN_PROGRESS") @NotNull UserMissionStatus missionType,
             @PageZero Integer page,

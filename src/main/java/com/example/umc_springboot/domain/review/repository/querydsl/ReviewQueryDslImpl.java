@@ -84,7 +84,7 @@ public class ReviewQueryDslImpl implements ReviewQueryDsl {
 
         // 4. fetch join으로 가져온 content + groupBy로 가져온 photoUrlMap으로 ReviewResponseDto를 조립한다.
         List<ReviewResDto> dtoList = content.stream()
-                .map(r->reviewMapper.toReviewResponseDto(r, photoUrlMap))
+                .map(r->reviewMapper.toReviewResDto(r, photoUrlMap))
                 .toList();
 
         // 5. 해당 조건(Predicate)에 맞는 데이터의 총 개수를 구하는 쿼리
