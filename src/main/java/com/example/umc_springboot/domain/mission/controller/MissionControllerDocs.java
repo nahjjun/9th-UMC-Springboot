@@ -3,8 +3,10 @@ package com.example.umc_springboot.domain.mission.controller;
 import com.example.umc_springboot.domain.mission.dto.request.ChallengeMissionReqDto;
 import com.example.umc_springboot.domain.mission.dto.request.CreateMissionReqDto;
 import com.example.umc_springboot.domain.mission.dto.response.MissionResDto;
+import com.example.umc_springboot.domain.userMission.entity.UserMission;
 import com.example.umc_springboot.domain.userMission.enums.UserMissionStatus;
 import com.example.umc_springboot.global.annotation.PageZero;
+import com.example.umc_springboot.global.annotation.ValidSort;
 import com.example.umc_springboot.global.response.GlobalResponse;
 import com.example.umc_springboot.global.response.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -76,7 +78,7 @@ public interface MissionControllerDocs {
             @RequestParam(defaultValue = "IN_PROGRESS") @NotNull UserMissionStatus missionType,
             @PageZero Integer page,
             Integer size,
-            String sort
+            @ValidSort(target = UserMission.class) String sort // 커스텀 어노테이션, 해당 클래스에 정렬 기준 필드명이 실제로 있는지, 형식은 맞는지 등을 검증함
             );
 
 }

@@ -5,8 +5,10 @@ import com.example.umc_springboot.domain.mission.dto.request.ChallengeMissionReq
 import com.example.umc_springboot.domain.mission.dto.request.CreateMissionReqDto;
 import com.example.umc_springboot.domain.mission.dto.response.MissionResDto;
 import com.example.umc_springboot.domain.mission.service.MissionService;
+import com.example.umc_springboot.domain.userMission.entity.UserMission;
 import com.example.umc_springboot.domain.userMission.enums.UserMissionStatus;
 import com.example.umc_springboot.global.annotation.PageZero;
+import com.example.umc_springboot.global.annotation.ValidSort;
 import com.example.umc_springboot.global.response.GlobalResponse;
 import com.example.umc_springboot.global.response.PageResponse;
 import com.example.umc_springboot.global.util.PageUtil;
@@ -49,7 +51,7 @@ public class MissionController implements MissionControllerDocs{
             @RequestParam(defaultValue = "IN_PROGRESS") @NotNull UserMissionStatus missionType,
             @PageZero Integer page,
             Integer size,
-            String sort){
+            @ValidSort(target = UserMission.class) String sort){
         Pageable pageable = PageRequest.of(page - 1, size, pageUtil.parseSort(sort));
         PageResponse<MissionResDto> response = missionService.searchUserMissions(userId, missionType, pageable);
         return ResponseEntity
