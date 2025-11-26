@@ -8,7 +8,7 @@ public class PageUtil {
 
     public Sort parseSort(String sort){
         if (sort == null || sort.isBlank()) {
-            // 기본 정렬
+            // 기본 정렬 - desc : 내림차순
             return Sort.by(Sort.Direction.DESC, "createdAt");
         }
 

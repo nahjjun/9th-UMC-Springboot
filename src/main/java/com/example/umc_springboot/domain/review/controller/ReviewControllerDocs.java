@@ -4,8 +4,11 @@ package com.example.umc_springboot.domain.review.controller;
 import com.example.umc_springboot.domain.address.enums.Dong;
 import com.example.umc_springboot.domain.review.dto.request.ReviewCreateReqDto;
 import com.example.umc_springboot.domain.review.dto.response.ReviewResDto;
+import com.example.umc_springboot.domain.review.entity.Review;
 import com.example.umc_springboot.domain.review.enums.SearchRequestType;
+import com.example.umc_springboot.domain.userMission.entity.UserMission;
 import com.example.umc_springboot.global.annotation.PageZero;
+import com.example.umc_springboot.global.annotation.ValidSort;
 import com.example.umc_springboot.global.response.GlobalResponse;
 import com.example.umc_springboot.global.response.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -73,7 +76,7 @@ public interface ReviewControllerDocs {
             @RequestParam(defaultValue = "STAR") @NotNull SearchRequestType type,
             @PageZero Integer page,
             Integer size,
-            String sort
+            @ValidSort(target = Review.class) String sort // 커스텀 어노테이션, 해당 클래스에 정렬 기준 필드명이 실제로 있는지, 형식은 맞는지 등을 검증함
     );
 
 

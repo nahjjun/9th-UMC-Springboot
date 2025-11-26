@@ -1,6 +1,7 @@
 package com.example.umc_springboot.global.validator;
 
 import com.example.umc_springboot.global.annotation.PageZero;
+import com.example.umc_springboot.global.exception.GlobalErrorCode;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,12 @@ public class PageZeroValidator implements ConstraintValidator<PageZero, Integer>
     // 인자로 들어온 Pageable의 page가 0보다 크거나 같은지 확인
     @Override
     public boolean isValid(Integer num, ConstraintValidatorContext constraintValidatorContext) {
-        return num > 0;
+        boolean isValid =  num > 0;
+        if(!isValid){
+            // @PageSort에서 설정된 Default 메시지를 초기화시키고, 새로운 메시지로 덮어씌운다
+            constraintValidatorContext.disableDefaultConstraintViolation();
+            constraintValidatorContext.buildConstraintViolationWithTemplate(GlobalErrorCode.PAGE_SORT_STYLE_WRONG.getMessage()).addConstraintViolation();
+        }
+        return isValid;
     }
 }
