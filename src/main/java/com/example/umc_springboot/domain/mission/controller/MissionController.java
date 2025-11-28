@@ -4,6 +4,9 @@ package com.example.umc_springboot.domain.mission.controller;
 import com.example.umc_springboot.domain.mission.dto.request.ChallengeMissionReqDto;
 import com.example.umc_springboot.domain.mission.dto.request.CreateMissionReqDto;
 import com.example.umc_springboot.domain.mission.dto.response.MissionResDto;
+import com.example.umc_springboot.domain.mission.dto.response.UserMissionResDto;
+import com.example.umc_springboot.domain.mission.entity.Mission;
+import com.example.umc_springboot.domain.mission.enums.MissionStatus;
 import com.example.umc_springboot.domain.mission.service.MissionService;
 import com.example.umc_springboot.domain.userMission.entity.UserMission;
 import com.example.umc_springboot.domain.userMission.enums.UserMissionStatus;
@@ -38,6 +41,23 @@ public class MissionController implements MissionControllerDocs{
     }
 
     @Override
+    public ResponseEntity<GlobalResponse<PageResponse<MissionResDto>>> searchMissions(
+            @PathVariable @NotNull Long storeId,
+            @RequestParam(defaultValue = "ACTIVE") @NotNull MissionStatus missionType,
+            @PageZero Integer page,
+            Integer size,
+            @ValidSort(target = Mission.class) String sort
+    ){
+        Pageable pageable = PageRequest.of(page, size, pageUtil.parseSort(sort));
+        PageResponse<MissionResDto> response = missionService.searchMissions(storeId, missionType, pageable);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(GlobalResponse.success("가게가 등록한 미션 목록 조회 성공!", response));
+    }
+
+
+
+    @Override
     public ResponseEntity<GlobalResponse<?>> challengeMission(@RequestBody @Valid ChallengeMissionReqDto dto, @PathVariable Long userId) {
         missionService.challengeMission(dto, userId);
         return ResponseEntity
@@ -46,14 +66,14 @@ public class MissionController implements MissionControllerDocs{
     }
 
     @Override
-    public ResponseEntity<GlobalResponse<PageResponse<MissionResDto>>> searchUserMissions(
+    public ResponseEntity<GlobalResponse<PageResponse<UserMissionResDto>>> searchUserMissions(
             @PathVariable @NotNull Long userId,
             @RequestParam(defaultValue = "IN_PROGRESS") @NotNull UserMissionStatus missionType,
             @PageZero Integer page,
             Integer size,
             @ValidSort(target = UserMission.class) String sort){
         Pageable pageable = PageRequest.of(page - 1, size, pageUtil.parseSort(sort));
-        PageResponse<MissionResDto> response = missionService.searchUserMissions(userId, missionType, pageable);
+        PageResponse<UserMissionResDto> response = missionService.searchUserMissions(userId, missionType, pageable);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(GlobalResponse.success("사용자가 할당받은 미션 목록 조회 성공!", response));

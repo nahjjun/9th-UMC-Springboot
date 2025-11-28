@@ -3,6 +3,9 @@ package com.example.umc_springboot.domain.mission.controller;
 import com.example.umc_springboot.domain.mission.dto.request.ChallengeMissionReqDto;
 import com.example.umc_springboot.domain.mission.dto.request.CreateMissionReqDto;
 import com.example.umc_springboot.domain.mission.dto.response.MissionResDto;
+import com.example.umc_springboot.domain.mission.dto.response.UserMissionResDto;
+import com.example.umc_springboot.domain.mission.entity.Mission;
+import com.example.umc_springboot.domain.mission.enums.MissionStatus;
 import com.example.umc_springboot.domain.userMission.entity.UserMission;
 import com.example.umc_springboot.domain.userMission.enums.UserMissionStatus;
 import com.example.umc_springboot.global.annotation.PageZero;
@@ -42,6 +45,30 @@ public interface MissionControllerDocs {
 
 
     @Operation(
+            summary = "특정 가게가 등록한 미션들의 목록을 가져오는 API",
+            description = """
+                    특정 가게가 등록한 미션들의 목록을 가져오는 API입니다.  
+                    
+                    [인증 필요 없음]
+                    """
+    )
+    @Parameters({
+            @Parameter(name="page", description="페이지 번호(1부터 시작)", example = "1"),
+            @Parameter(name="size", description="페이지 크기", example = "10"),
+            @Parameter(name="sort", description="정렬 기준(ex: createdAt,desc", example = "createdAt,desc")
+    })
+    @GetMapping("/stores/{storeId}/missions")
+    public ResponseEntity<GlobalResponse<PageResponse<MissionResDto>>> searchMissions(
+            @PathVariable @NotNull Long storeId,
+            @RequestParam(defaultValue = "ACTIVE") @NotNull MissionStatus missionType,
+            @PageZero Integer page,
+            Integer size,
+            @ValidSort(target = Mission.class) String sort
+            );
+
+
+
+    @Operation(
             summary = "사용자가 가게가 올려둔 미션을 도전 신청하는 API",
             description = """
                     user는 가게가 등록해둔 미션을 도전 신청합니다.
@@ -73,12 +100,15 @@ public interface MissionControllerDocs {
             @Parameter(name = "sort", description = "정렬 기준(ex: createdAt,desc", example = "createdAt,desc")
     })
     @GetMapping("/users/{userId}/missions")
-    public ResponseEntity<GlobalResponse<PageResponse<MissionResDto>>> searchUserMissions(
+    public ResponseEntity<GlobalResponse<PageResponse<UserMissionResDto>>> searchUserMissions(
             @PathVariable @NotNull Long userId,
             @RequestParam(defaultValue = "IN_PROGRESS") @NotNull UserMissionStatus missionType,
             @PageZero Integer page,
             Integer size,
             @ValidSort(target = UserMission.class) String sort // 커스텀 어노테이션, 해당 클래스에 정렬 기준 필드명이 실제로 있는지, 형식은 맞는지 등을 검증함
             );
+
+
+
 
 }

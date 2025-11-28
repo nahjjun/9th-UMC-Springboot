@@ -3,11 +3,14 @@ package com.example.umc_springboot.domain.mission.service;
 import com.example.umc_springboot.domain.mission.dto.request.ChallengeMissionReqDto;
 import com.example.umc_springboot.domain.mission.dto.request.CreateMissionReqDto;
 import com.example.umc_springboot.domain.mission.dto.response.MissionResDto;
+import com.example.umc_springboot.domain.mission.dto.response.UserMissionResDto;
 import com.example.umc_springboot.domain.mission.entity.Mission;
+import com.example.umc_springboot.domain.mission.entity.QMission;
 import com.example.umc_springboot.domain.mission.exception.MissionErrorCode;
 import com.example.umc_springboot.domain.mission.mapper.MissionMapper;
 import com.example.umc_springboot.domain.mission.repository.MissionRepository;
 import com.example.umc_springboot.domain.review.mapper.ReviewMapper;
+import com.example.umc_springboot.domain.store.entity.QStore;
 import com.example.umc_springboot.domain.store.entity.Store;
 import com.example.umc_springboot.domain.store.exception.StoreErrorCode;
 import com.example.umc_springboot.domain.store.repository.StoreRepository;
@@ -15,12 +18,14 @@ import com.example.umc_springboot.domain.mission.enums.MissionStatus;
 import com.example.umc_springboot.domain.user.entity.User;
 import com.example.umc_springboot.domain.user.exception.UserErrorCode;
 import com.example.umc_springboot.domain.user.repository.UserRepository;
+import com.example.umc_springboot.domain.userMission.entity.QUserMission;
 import com.example.umc_springboot.domain.userMission.entity.UserMission;
 import com.example.umc_springboot.domain.userMission.enums.UserMissionStatus;
 import com.example.umc_springboot.domain.userMission.exception.UserMissionErrorCode;
 import com.example.umc_springboot.domain.userMission.repository.UserMissionRepository;
 import com.example.umc_springboot.global.exception.CustomException;
 import com.example.umc_springboot.global.response.PageResponse;
+import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +47,11 @@ public class MissionService {
      */
     @Transactional
     public void createMission(CreateMissionReqDto dto, Long storeId) {
+        // store가 실제로 있는지 확인
+        if(!storeRepository.existsById(storeId)){
+            throw new CustomException(StoreErrorCode.STORE_NOT_FOUND);
+        }
+
         // 1. Store 가져오기
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new CustomException(StoreErrorCode.STORE_NOT_FOUND));
 
@@ -51,6 +61,30 @@ public class MissionService {
         // 3. mission 저장
         missionRepository.save(mission);
     }
+
+
+    /**
+     * 가게가 등록함 미션을 조회하는 함수
+     * @param storeId
+     * @param missionType
+     * @param pageable
+     * @return
+     */
+    @Transactional(readOnly = true)
+    // 데이터가 Mission 엔티티에 한정되어있으므로 JPA로만 처리
+    public PageResponse<MissionResDto> searchMissions(Long storeId, MissionStatus missionType, Pageable pageable) {
+        // 1. 해당 가게가 존재하는지 확인
+        if(!storeRepository.existsById(storeId)){
+            throw new CustomException(StoreErrorCode.STORE_NOT_FOUND);
+        }
+
+        // 2. Page 객체 받기
+        Page<Mission> pageData = missionRepository.findByStoreIdAndStatus(storeId, missionType, pageable);
+
+        // 3. PageResponse로 변환
+        return PageResponse.of(pageData, missionMapper::toMissionResDto);
+    }
+
 
 
     /*
@@ -83,51 +117,36 @@ public class MissionService {
 
     /**
      * 사용자가 할당받은 미션들의 목록을 조회하는 함수
-     * @param userId
-     * @param userMissionStatus
-     * @return PageResponse<MissionResDto>
+     * @param userId 사용자가 신청한 미션을 조회하기 위한 특정 사용자의 ID
+     * @param userMissionStatus 사용자가 신청한 미션
+     * @return PageResponse<UserMissionResDto>
      */
-    // querydsl로 리팩토링하기!!
+    // 연결된 데이터가 있으므로 querydsl로 내부 로직 최적화
     @Transactional(readOnly = true)
-    public PageResponse<MissionResDto> searchUserMissions(Long userId, UserMissionStatus userMissionStatus, Pageable pageable) {
+    public PageResponse<UserMissionResDto> searchUserMissions(Long userId, UserMissionStatus userMissionStatus, Pageable pageable) {
         // 1. 해당 사용자가 존재하지 않는지 확인
         if(!userRepository.existsById(userId)){
             throw new CustomException(UserErrorCode.USER_NOT_FOUND);
         }
 
-        // 2. userMissionStatus따라 구분
-        switch (userMissionStatus) {
-            case UserMissionStatus.IN_PROGRESS:
-                // 1. 도전중인 미션 없는 경우 확인
-                if(!userMissionRepository.existsByUserIdAndStatus(userId, userMissionStatus)){
-                    throw new CustomException(UserMissionErrorCode.USER_CHALLENGING_MISSION_EMPTY);
-                }
-                break;
-            case UserMissionStatus.COMPLETED:
-                // 1. 완료된 미션 없는 경우 확인
-                if(!userMissionRepository.existsByUserIdAndStatus(userId, userMissionStatus)){
-                    throw new CustomException(UserMissionErrorCode.USER_COMPLETED_MISSION_EMPTY);
-                }
-                break;
-            case UserMissionStatus.EXPIRED:
-                // 1. 기간 만료된 미션 없는 경우 확인
-                if(!userMissionRepository.existsByUserIdAndStatus(userId, userMissionStatus)){
-                    throw new CustomException(UserMissionErrorCode.USER_EXPIRED_MISSION_EMPTY);
-                }
-                break;
-            case UserMissionStatus.FAILED:
-                // 1. 실패한 미션 없는 경우 확인
-                if(!userMissionRepository.existsByUserIdAndStatus(userId, userMissionStatus)){
-                    throw new CustomException(UserMissionErrorCode.USER_FAILED_MISSION_EMPTY);
-                }
-                break;
-        }
+        // switch문으로 매번 db에 접근해서 쿼리를 가져오면 성능 저하가 일어난다! 따라서 userMissionStatus 값대로 분리해서 에러처리하는 코드 삭제
+
+        // 2. QClass, BooleanBuilder로 조건문 생성하기
+        QUserMission userMission = QUserMission.userMission;
+        QMission mission = QMission.mission;
+        QStore store = QStore.store;
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        // 사용자 id와 미션 status가 같은 데이터만 가져오기
+        builder.and(userMission.user.id.eq(userId));
+        builder.and(userMission.status.eq(userMissionStatus));
 
         // 2. 페이징으로 해당 데이터 가져오기
-        Page<UserMission> pageData =  userMissionRepository.findByUserIdAndStatus(userId, userMissionStatus, pageable);
+        Page<UserMissionResDto> pageData = userMissionRepository.searchUserMissions(builder, pageable);
 
-        // 3. 페이징된 데이터로 entity -> mapper -> dto 변경한 뒤 PageResponse<MissionResDto>로 변경
-        return PageResponse.of(pageData, missionMapper::toMissionResDto);
+        // 3. PageResponse로 변환
+        return PageResponse.of(pageData);
     }
 
 }
