@@ -16,6 +16,7 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // 클라이언트에서 자격 증명(쿠키, Authorization 헤더 등)을 보낼 수 있도록 허용
+        // 세션 인증의 핵심은 쿠키(JSESSIONID)이다.
         config.setAllowCredentials(true);
 
         // 허용할 origin(출처, 도메인)
