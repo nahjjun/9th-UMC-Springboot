@@ -2,6 +2,7 @@ package com.example.umc_springboot.domain.user.entity;
 
 
 import com.example.umc_springboot.domain.address.entity.Address;
+import com.example.umc_springboot.domain.auth.enums.Role;
 import com.example.umc_springboot.domain.foodType.entity.FoodType;
 import com.example.umc_springboot.domain.review.entity.Review;
 import com.example.umc_springboot.domain.user.enums.Gender;
@@ -63,6 +64,11 @@ public class User extends BaseTimeEntity {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private UserStatus status = UserStatus.ACTIVE;
+
+    @Column(name="role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private Role role = Role.ROLE_USER;
 
     @Column(name="inactive_date")
     private LocalDate inactiveDate;
